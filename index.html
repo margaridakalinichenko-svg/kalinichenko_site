@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kalinichenko</title>
+<meta name="description" content="Margarida Kalinichenko — produção, montagem e realização.">
+<meta property="og:title" content="Kalinichenko">
+<meta property="og:description" content="Produção · Montagem · Realização">
+<meta property="og:image" content="media/fundo-poster.jpg">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@500;600&display=swap">
+<style>
+/* Layout: one black, single-theme system for every page. Home = the dance video and the giant surname.
+   Inner pages reuse that voice: a condensed display title, small uppercase Barlow for everything else,
+   main work as 16:9 rectangles, crew credits as a ruled table. */
+:root {
+  --bg: #000;
+  --fg: #f2f2f2;
+  --dim: #8a8a8a;
+  --rule: #f2f2f2;
+  --rule-soft: #2c2c2c;
+  --card: #111;
+  --sans: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); overflow-x: clip; max-width: 100%; }
+body {
+  color: var(--fg); font-family: var(--sans); font-size: 13px; line-height: 1.4;
+  text-transform: uppercase; letter-spacing: .02em;
+  padding-inline: clamp(16px, 4.5vw, 64px); padding-block: 0 40px;
+}
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-transform: inherit; letter-spacing: inherit; }
+.layer { position: relative; z-index: 1; }
+
+/* header on inner pages: the surname as a small wordmark, sections on the right */
+header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; background: var(--bg);
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px 24px; flex-wrap: wrap;
+  padding-block: 28px 20px;
+  box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax);   /* header band spans the full width */
+}
+.brand { font-family: var(--cond); font-weight: 600; font-size: clamp(22px, 2.4vw, 30px); line-height: 1; letter-spacing: 0; }
+header nav { display: flex; gap: 8px clamp(14px, 2.4vw, 28px); flex-wrap: wrap; }
+header nav a { color: var(--fg); opacity: .38; transition: opacity .2s; }
+header nav a:hover { opacity: .7; }
+header nav a[aria-current="page"] { opacity: 1; font-weight: 500; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.page:has(> h1.sr-only) { padding-top: clamp(8px, 2vw, 24px); }
+@media (min-width: 900px) {
+  header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; }
+  header .extra { justify-self: end; }
+}
+/* home: full-screen dance video behind the name */
+.garden { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; display: block;
+  object-fit: cover; max-width: none; background: #0b0807; }
+
+.home-video {
+  position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 50%; background: #0e3a44; max-width: none;
+}
+.home-shade { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%); }
+.home {
+  position: relative; z-index: 1; min-height: calc(100svh - 140px);
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.surname {
+  font-family: var(--cond); font-weight: 600; font-size: clamp(3.4rem, 16.4vw, 17rem);
+  line-height: .8; letter-spacing: -.005em; margin: 0; overflow-wrap: anywhere;
+}
+.home-links { display: flex; justify-content: flex-end; margin-top: 18px; }
+.seework { position: relative; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.seework > button:hover, .seework a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.seework > button[aria-expanded="true"] { text-decoration: underline; text-underline-offset: 4px; }
+/* "Ver trabalho" chooser: background blurs, three options stacked in the centre */
+.garden { transition: filter .6s ease, transform .6s ease; }
+body.choosing .garden { filter: blur(16px) brightness(.55); transform: scale(1.06); }
+.namebox { transition: opacity .4s ease, filter .4s ease; }
+body.choosing .namebox { opacity: 0; filter: blur(6px); pointer-events: none; }
+.choose {
+  position: fixed; inset: 0; z-index: 4; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 48px;
+  animation: chooseIn .45s ease both;
+}
+.choose ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.choose ul a { font-size: clamp(18px, 2.2vw, 26px); letter-spacing: .08em; opacity: .85; transition: opacity .2s; }
+.choose ul a:hover, .choose ul a:focus-visible { opacity: 1; text-decoration: underline; text-underline-offset: 6px; }
+.choose-close { color: var(--dim); font-size: 11px; letter-spacing: .1em; }
+.choose-close:hover { color: var(--fg); }
+@keyframes chooseIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .garden, .namebox { transition: none; } .choose { animation: none; } }
+.namebox { width: fit-content; max-width: 100%; margin-inline: auto; }
+.home .surname { text-align: left; }
+.home-line { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
+.home-roles { margin: 0; text-align: left; }
+body.is-home .brand, body.is-home header nav { display: none; }
+body.is-home footer, body.is-home header { display: none; }
+/* home is exactly one screen tall: no scrolling, nothing wider than the screen */
+html:has(body.is-home), body.is-home { height: 100%; overflow: hidden; overscroll-behavior: none; }
+body.is-home { padding-block: 0; }
+body.is-home .home {
+  height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  min-height: 0; padding-block: 0 clamp(24px, 6svh, 56px); box-sizing: border-box;
+}
+body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
+@media (max-width: 600px) {
+  .home-line { flex-direction: column; align-items: stretch; gap: 12px; }
+  .home-line .seework { align-self: flex-end; }
+  .home-roles { font-size: 12px; }
+}
+
+/* inner pages */
+.page { padding-top: clamp(24px, 5vw, 64px); }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap;
+  padding-bottom: clamp(24px, 3vw, 40px); }
+.page-head h1 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 10vw, 9rem); line-height: .8; margin: 0; letter-spacing: -.005em; }
+.page-head .count { color: var(--dim); font-variant-numeric: tabular-nums; }
+
+/* main work: rectangles */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 36px 20px; }
+.card { display: grid; gap: 10px; min-width: 0; }
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--card); overflow: hidden; }
+.frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.card:hover .frame img { transform: scale(1.03); }
+.frame .ph { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px;
+  font-family: var(--cond); font-weight: 600; font-size: clamp(28px, 3.4vw, 44px); line-height: .9; text-align: center;
+  color: #262626; text-wrap: balance; }
+.card .meta { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.card .t { font-weight: 500; min-width: 0; overflow-wrap: anywhere; }
+.card .y { color: var(--dim); font-variant-numeric: tabular-nums; }
+.card .sub { color: var(--dim); margin-top: -6px; }
+
+/* full-screen projects (Realização): each one fills the screen below the header */
+.slides { margin-inline: calc(-1 * clamp(16px, 4.5vw, 64px)); display: grid; gap: 4px; }
+.page:has(.slides) { padding-top: 0; }
+.slide { position: relative; height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px)); min-height: 320px;
+  overflow: hidden; background: var(--card); scroll-margin-top: var(--hh, 76px); }
+.slide img, .slide video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.slide .ph { position: absolute; inset: 0; background: radial-gradient(90% 80% at 30% 40%, #1d1a19 0%, #0b0a0a 70%, #050505 100%); }
+.slide::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 40%); pointer-events: none; }
+.slide .laurel, .frame .laurel { position: absolute; z-index: 1; inset: auto; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: clamp(288px, 29vw, 486px); height: auto; object-fit: contain; opacity: .92; filter: drop-shadow(0 1px 8px rgba(0,0,0,.5)); pointer-events: none; }
+.frame .laurel.sm { width: clamp(150px, 54%, 270px); }
+.card:hover .frame .laurel { transform: translate(-50%, -50%); }
+.slide-tag { position: absolute; z-index: 1; top: clamp(20px, 3.4vw, 44px); right: clamp(16px, 4.5vw, 64px); opacity: .5; letter-spacing: .1em; }
+.slide-note { position: absolute; z-index: 1; top: clamp(20px, 3.4vw, 44px); right: clamp(16px, 4.5vw, 64px);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px; text-align: right; }
+.slide-note span { opacity: .6; letter-spacing: .08em; }
+.slide-note a, .slide-note button { opacity: .9; } .slide-note a:hover, .slide-note button:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.slide-tag.sm { top: 10px; right: 12px; font-size: 11px; }
+/* panel = two rows: free space on top (the laurel sits centred in it), caption at the bottom */
+.slide { display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+.slide-cap { position: relative; z-index: 1; grid-row: 2; margin: 0 clamp(16px, 4.5vw, 64px) clamp(20px, 4vw, 48px); }
+.slide .laurel { position: relative; grid-row: 1; place-self: center; top: auto; left: auto; transform: none;
+  width: clamp(250px, 25vw, 420px); max-height: 80%; }
+.slide-cap h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 9vw, 9rem); line-height: .82; margin: 0 0 14px; }
+.slide-cap p { margin: 0; display: flex; justify-content: space-between; gap: 16px; }
+.slide-cap p { align-items: baseline; }
+/* "Ver mais" floats above the year, so the caption line keeps its original spacing under the title */
+.slide-cap .yr-col { position: relative; }
+.slide-cap .yr-col .more { position: absolute; right: 0; bottom: calc(100% + 8px); white-space: nowrap; }
+.slide-cap .yr { font-variant-numeric: tabular-nums; }
+.slide-cap .more { opacity: .85; transition: opacity .2s; }
+.slide-cap .more:hover, .slide-cap .more:focus-visible { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+/* project page opened from "Ver mais" */
+.proj { position: fixed; inset: 0; z-index: 20; background: var(--bg); overflow-y: auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 28px) clamp(16px, 4.5vw, 64px) 64px; animation: chooseIn .35s ease both; }
+.proj-bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.proj-bar button { color: var(--dim); } .proj-bar button:hover { color: var(--fg); }
+.proj h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 9vw, 8rem); line-height: .85; margin: 24px 0 12px; }
+.proj .meta { color: var(--dim); display: flex; gap: 8px 24px; flex-wrap: wrap; margin-bottom: 28px; }
+.proj .media { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--card); }
+.proj .media video, .proj .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.proj .note { color: #555; margin-top: 18px; }
+.proj .media .watch { position: absolute; inset: 0; z-index: 1; display: grid; place-content: center; justify-items: center; gap: 14px;
+  background: rgba(0,0,0,.35); transition: background .3s; letter-spacing: .08em; }
+.proj .media .watch:hover { background: rgba(0,0,0,.5); }
+.proj .media .watch .play { width: 0; height: 0; border-style: solid; border-width: 18px 0 18px 30px; border-color: transparent transparent transparent var(--fg); }
+body.proj-on { overflow: hidden; }
+html:has(#realizacao:not([hidden])) { scroll-snap-type: y mandatory; }
+body:has(#realizacao:not([hidden])) footer { display: none; }
+body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
+.slide, .slides + .credits { scroll-snap-stop: always; }
+/* after the full-screen projects, the crew list gets a full screen of its own */
+.slides + .credits { margin-top: 4px; min-height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px));
+  padding-block: clamp(32px, 6vh, 72px); scroll-snap-align: start; scroll-margin-top: var(--hh, 76px); align-content: start; }
+.slide { scroll-snap-align: start; }
+
+/* Montagem showreel: one full-screen player */
+.page:has(.reel) { padding-top: 0; }
+.reel { position: relative; margin-inline: calc(-1 * clamp(16px, 4.5vw, 64px));
+  height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px)); min-height: 360px; overflow: hidden; background: #000; }
+.reel video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.reel-ph { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(90% 80% at 30% 40%, #1d1a19 0%, #0b0a0a 70%, #050505 100%); }
+.reel-ph span { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 12vw, 11rem); line-height: .85; color: rgba(255,255,255,.06); text-align: center; padding: 0 6vw; text-wrap: balance; }
+.reel-ph small { color: #555; font-size: 11px; letter-spacing: .1em; }
+.reel::after { content: ""; position: absolute; inset: 0; pointer-events: none; transition: background .4s;
+  background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 38%); }
+.reel.paused::after { background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.35) 60%, rgba(0,0,0,.35) 100%); }
+.reel-hit { position: absolute; inset: 0; z-index: 1; cursor: pointer; }
+.reel-state { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+  letter-spacing: .14em; opacity: 0; transition: opacity .3s; }
+.reel.paused .reel-state { opacity: .9; }
+.reel-top { position: absolute; z-index: 2; top: clamp(20px, 3.4vw, 44px); left: clamp(16px, 4.5vw, 64px); right: clamp(16px, 4.5vw, 64px);
+  display: flex; justify-content: space-between; gap: 16px; }
+.reel-count { opacity: .6; font-variant-numeric: tabular-nums; }
+.reel-top button { opacity: .7; } .reel-top button:hover { opacity: 1; }
+.reel-cap { position: absolute; z-index: 2; left: clamp(16px, 4.5vw, 64px); right: clamp(16px, 4.5vw, 64px); bottom: clamp(40px, 5vw, 64px);
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: nowrap; pointer-events: none; }
+.reel-cap h2, .slide-cap h2 { white-space: nowrap; }
+.reel-cap-l { min-width: 0; flex: 1 1 0; overflow: hidden; }
+.reel-btns { flex: none; }
+.reel-cap h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(2.6rem, 8vw, 8rem); line-height: .82; margin: 0 0 14px; }
+.reel-cap p { margin: 0; }
+.reel-btns { display: flex; gap: 20px; pointer-events: auto; }
+.reel-btns a { opacity: .85; } .reel-btns a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.reel-bar { position: absolute; z-index: 2; left: clamp(16px, 4.5vw, 64px); right: clamp(16px, 4.5vw, 64px); bottom: clamp(16px, 2vw, 26px);
+  display: flex; gap: 4px; }
+.reel-bar .seg { flex: 1; height: 14px; display: flex; align-items: center; cursor: pointer; }
+.reel-bar .seg::before { content: ""; }
+.reel-bar .seg { position: relative; }
+.reel-bar .seg i { position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px; width: 0; background: var(--fg); }
+.reel-bar .seg { background: linear-gradient(rgba(255,255,255,.25), rgba(255,255,255,.25)) center / 100% 2px no-repeat; }
+.reel-bar .seg:hover { background-size: 100% 4px; }
+.reel-bar .seg.done i { width: 100%; }
+
+/* crew credits: ruled table */
+.sr-only + .credits { margin-top: clamp(24px, 4vw, 56px); }
+.credits { margin-top: clamp(72px, 10vw, 128px); position: relative; z-index: 2; }
+.credits h2 { font: inherit; color: var(--dim); margin: 0 0 12px; }
+
+@media (min-width: 900px) {
+  /* like the cinematographer index: label on the left, the ruled list on the right */
+  .credits { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 32px; align-items: start; }
+  /* compact list on the right side */
+  .credits .tbl td { font-size: 13.5px; letter-spacing: .03em; padding: 9px 12px 8px 0; }
+  /* the table sits in the middle of the screen */
+  .sr-only + .credits, .slides + .credits { min-height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px) - 120px);
+    align-content: center; align-items: center; margin-top: 0; }
+  .slides + .credits { min-height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px)); }
+  .credits-side { position: static; }
+  .tbl table { table-layout: fixed; }
+  .tbl th, .tbl td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tbl col.c-n { width: 5%; } .tbl col.c-r { width: 31%; } .tbl col.c-d { width: 19%; } .tbl col.c-y { width: 6%; }
+  .tbl td:nth-child(3) { overflow: visible; text-overflow: clip; }
+  .credits-side { position: sticky; top: 110px; }
+  .tbl table { min-width: 0; }
+  .tbl tbody tr { cursor: default; transition: opacity .25s; }
+  .credits.peeking tbody tr { opacity: .35; }
+  .credits.peeking tbody tr.on { opacity: 1; }
+}
+@media (min-width: 1200px) { .credits { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) !important; } }
+/* full-screen moment from the project behind the list (desktop hover) */
+.peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
+.peek.on { opacity: 1; }
+.peek video, .peek img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.peek .ph { position: absolute; inset: 0; display: grid; place-items: center; padding: 0 6vw;
+  background: radial-gradient(80% 70% at 35% 45%, #2a2320 0%, #0e0c0b 65%, #000 100%);
+  font-family: var(--cond); font-weight: 600; font-size: clamp(4rem, 12vw, 12rem); line-height: .85; text-align: center;
+  color: rgba(255,255,255,.07); text-wrap: balance; }
+.peek .ph small { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); font-family: var(--sans); font-weight: 400;
+  font-size: 11px; letter-spacing: .04em; color: #555; white-space: nowrap; }
+.peek::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.15), rgba(0,0,0,.55)); }
+body.peeking header { background: transparent; box-shadow: none; }
+body.peeking .cards, body.peeking .slides { opacity: .08; transition: opacity .4s; }
+.slides { transition: opacity .4s; }
+.cards { transition: opacity .4s; }
+.tbl { overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; min-width: 560px; }
+.tbl th { font-weight: 400; text-align: left; color: var(--dim); padding: 0 12px 8px 0; }
+.tbl td { padding: 9px 12px 8px 0; border-top: 1px solid var(--rule); vertical-align: baseline; }
+.tbl tr:last-child td { border-bottom: 1px solid var(--rule); }
+.tbl .n, .tbl .y { font-variant-numeric: tabular-nums; width: 3.5em; }
+.tbl .y { text-align: right; padding-right: 0; }
+.tbl th.y { padding-right: 0; }
+
+/* oficina & sobre */
+.prose { text-transform: none; letter-spacing: 0; font-size: 16px; line-height: 1.55; max-width: 38rem; margin: 0 0 40px; }
+.prose p { margin: 0 0 1em; }
+.prose .note { color: var(--dim); font-size: 14px; }
+.art { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 36px 20px; }
+.art figure { margin: 0; display: grid; gap: 10px; }
+.art img { display: block; width: 100%; height: auto; aspect-ratio: 860 / 1222; object-fit: cover; }
+.art .slot { aspect-ratio: 860 / 1222; max-width: 100%; border: 1px dashed var(--rule-soft); }
+.art figcaption { display: flex; justify-content: space-between; gap: 12px; }
+.art figcaption span:last-child { color: var(--dim); }
+.contact { display: grid; gap: 18px; }
+.contact dt { color: var(--dim); }
+.contact dd { margin: 4px 0 0; display: flex; gap: 14px; flex-wrap: wrap; align-items: baseline; overflow-wrap: anywhere; }
+.copy { color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+.copy:hover { color: var(--fg); }
+
+/* for fun: looser, two staggered columns of moving rectangles */
+.ff-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 1.6vw, 22px); align-items: start; }
+.ff-col { display: grid; gap: clamp(8px, 1.6vw, 22px); min-width: 0; }
+.ff-col-b { padding-top: clamp(40px, 14vw, 200px); }
+.ff-tile { position: relative; display: block; width: 100%; max-width: 100%; overflow: hidden; background: var(--card);
+  transform: rotate(var(--tilt, 0deg)); transition: transform .5s ease; padding: 0; }
+.ff-tile:hover, .ff-tile:focus-visible { transform: rotate(0deg) scale(1.015); }
+.ff-tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ff-name { position: absolute; left: 12px; bottom: 10px; opacity: 0; transition: opacity .3s; text-shadow: 0 1px 8px rgba(0,0,0,.6); }
+.ff-tile:hover .ff-name, .ff-tile:focus-visible .ff-name { opacity: 1; }
+.ff-slot { border: 1px dashed var(--rule-soft); background: transparent; display: grid; place-items: center; }
+.ff-slot span { color: #3a3a3a; font-size: 11px; }
+.ff-open { position: fixed; inset: 0; z-index: 10; background: var(--bg); overflow-y: auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 28px) clamp(16px, 4.5vw, 64px) 64px; animation: chooseIn .4s ease both; }
+.ff-bar { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+.ff-bar span { font-family: var(--cond); font-weight: 600; font-size: clamp(2.6rem, 8vw, 6rem); line-height: .85; }
+.ff-bar button { color: var(--dim); } .ff-bar button:hover { color: var(--fg); }
+.ff-sub { color: var(--dim); margin: 12px 0 32px; }
+.ff-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(8px, 1.6vw, 22px); align-items: start; }
+.ff-gallery img { display: block; width: 100%; height: auto; }
+.ff-gallery img:first-child { grid-row: span 2; }
+body.ff-locked { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .ff-tile { transform: none; transition: none; } }
+
+footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--dim); font-size: 11px; }
+@media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
+</style>
+
+<video class="garden" id="garden" src="media/fundo.mp4" poster="media/fundo-poster.jpg" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture disableremoteplayback preload="auto" aria-hidden="true"></video>
+
+<div class="peek" id="peek" aria-hidden="true"></div>
+<div class="proj" id="proj" role="dialog" aria-modal="true" aria-labelledby="proj-t" hidden>
+  <div class="proj-bar"><span>KALI</span><button type="button" id="proj-close">Fechar</button></div>
+  <h2 id="proj-t"></h2>
+  <div class="meta" id="proj-meta"></div>
+  <div class="media" id="proj-media"></div>
+  <p class="note" id="proj-note">Sinopse, ficha técnica e link para o filme por adicionar</p>
+</div>
+<div class="layer">
+  <header>
+    <a class="brand" href="#inicio" aria-label="Kalinichenko, início">KALI</a>
+    <nav class="depts" aria-label="Departamentos">
+      <a href="#producao">Produção</a>
+      <a href="#montagem">Montagem</a>
+      <a href="#realizacao">Realização</a>
+    </nav>
+    <nav class="extra" aria-label="Mais">
+      <a href="#forfun">For fun</a>
+      <a href="#sobre">Sobre</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="home" id="inicio" data-view aria-label="Início">
+      <div class="namebox">
+        <h1 class="surname">KALINICHENKO</h1>
+        <div class="home-line">
+        <p class="home-roles">Produção · Montagem · Realização</p>
+        <div class="seework">
+          <button type="button" id="seework" aria-expanded="false" aria-controls="seework-menu">Ver trabalho →</button>
+        </div>
+        </div>
+      </div>
+      <div class="choose" id="seework-menu" role="dialog" aria-modal="true" aria-label="Escolher área de trabalho" hidden>
+        <ul>
+          <li><a href="#producao">Produção</a></li>
+          <li><a href="#montagem">Montagem</a></li>
+          <li><a href="#realizacao">Realização</a></li>
+        </ul>
+        <button type="button" class="choose-close" id="seework-close">Fechar</button>
+      </div>
+    </section>
+
+    <section class="page" id="producao" data-view aria-labelledby="h-prod"></section>
+    <section class="page" id="montagem" data-view aria-labelledby="h-mont"></section>
+    <section class="page" id="realizacao" data-view aria-labelledby="h-real"></section>
+
+    <section class="page ff" id="forfun" data-view aria-labelledby="h-of">
+      <h1 class="sr-only" id="h-of">For fun</h1>
+      <div class="ff-cols" id="ff-cols"></div>
+      <div class="ff-open" id="ff-open" role="dialog" aria-modal="true" aria-labelledby="ff-title" hidden>
+        <div class="ff-bar"><span id="ff-title"></span><button type="button" id="ff-close">Fechar</button></div>
+        <p class="ff-sub" id="ff-sub"></p>
+        <div class="ff-gallery" id="ff-gallery"></div>
+      </div>
+    </section>
+
+    <section class="page" id="sobre" data-view aria-labelledby="h-sobre">
+      <div class="page-head"><h1 id="h-sobre">Sobre</h1></div>
+      <div class="prose">
+        <p>Trabalho sobretudo em produção, de videoclipes a um piloto de série, onde fui produtora e showrunner. Em paralelo realizo e monto documentário, e faço anotação e assistência de realização em curtas de ficção.</p>
+        <p class="note">Bio provisória: a ajustar com as tuas palavras, formação e cidade.</p>
+      </div>
+      <dl class="contact">
+        <div><dt>Email</dt><dd><span id="mail">margaridakalinichenko@gmail.com</span><button class="copy" id="copy" type="button">Copiar</button></dd></div>
+        <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/margarida.kalinichenko/" target="_blank" rel="noopener">@margarida.kalinichenko</a></dd></div>
+        <div><dt>CV</dt><dd style="color:var(--dim)">PDF por adicionar</dd></div>
+      </dl>
+    </section>
+  </main>
+
+  <footer><span>© 2026 Margarida Kalinichenko</span><span>Lisboa</span></footer>
+</div>
+<script>
+const ROLE = { prod: "Produção", real: "Realização", mont: "Montagem", arte: "Direção de arte", anot: "Anotação", ar: "Assistência de realização" };
+/* d = who directed it (for crew credits); img = still for the rectangle when available */
+const P = [
+  { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
+  { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel" },
+  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" } },
+  { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4" },
+  { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan" },
+  { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" } },
+  { y: 2025, t: "Chulé", f: "Publicidade", r: ["prod", "real"], clip: "media/chule.mp4", img: "media/chule.jpg",
+    film: "https://www.instagram.com/reel/DPTunLQDdqE/", filmWhere: "Instagram" },
+  { y: 2025, t: "Victoria Leuca – Só", f: "Videoclipe", r: ["prod"], clip: "media/so.mp4", img: "media/so.jpg" },
+  { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro" },
+  { y: 2025, t: "Bye Bye Bacchus", f: "Curta-metragem", r: ["real", "mont"], clip: "media/bacchus.mp4", img: "media/bacchus.jpg", noMore: true,
+    note: "Atualmente no circuito de festivais", trailer: "",
+    laurel: { src: "media/louro-31ccp.png", alt: "Menção honrosa, Ensaio Nacional, 31.º Caminhos do Cinema Português, Coimbra 2025" } },
+  /* (escondido por agora) { y: 2025, t: "A Quinta da Lage", f: "Documentário", r: ["mont"] }, */
+  { y: 2025, t: "Eugénio de Andrade", f: "Documentário", r: ["mont"] },
+  { y: 2025, t: "Reflection", f: "Documentário", r: ["mont"], as: { mont: "Montagem & Legendagem" } },
+  { y: 2025, t: "Ai, o Pão!", f: "Retrato", r: ["arte"], d: "Vasco Souto" },
+  /* (escondido por agora) { y: 2024, t: "Zé Zen", f: "Documentário", r: ["mont"] }, */
+  /* (escondido por agora) { y: 2024, t: "Tyulpany", f: "Documentário", r: ["mont"] }, */
+  { y: 2024, t: "Pirouetts", f: "Retrato", r: ["real"], clip: "media/bailarina.mp4", img: "media/bailarina-poster.jpg", tag: "Em breve" }
+];
+const PAGES = {
+  producao:   { title: "Produção",   main: "prod", tableOnly: true, crewTitle: "" },
+  montagem:   { title: "Montagem",   main: "mont", reel: true },
+  realizacao: { title: "Realização", main: "real", full: true, crew: ["ar", "anot"], crewTitle: "Assistência de realização & Anotação" }
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const has = k => p => p.r.includes(k);
+
+const label = (p, k) => (p.as && p.as[k]) || ROLE[k];
+function slide(p, k) {
+  const pic = p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>`
+    : p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : `<span class="ph" aria-hidden="true"></span>`;
+  const extra = (p.laurel ? `<img class="laurel" src="${esc(p.laurel.src)}" alt="${esc(p.laurel.alt)}" width="758" height="688">` : "")
+    + (p.tag ? `<span class="slide-tag">${esc(p.tag)}</span>` : "")
+    + (p.tag || p.noMore ? "" : `<div class="slide-note"><button type="button" class="more" data-i="${P.indexOf(p)}" data-k="${k}">Ver mais →</button></div>`)
+    + (p.note ? `<div class="slide-note"><span>${esc(p.note)}</span>${p.trailer
+        ? `<a href="${esc(p.trailer)}" target="_blank" rel="noopener">Ver trailer →</a>`
+        : `<button type="button" class="more" data-i="${P.indexOf(p)}" data-k="${k}">Ver trailer →</button>`}</div>` : "");
+  return `<article class="slide">${pic}${extra}<div class="slide-cap"><h2>${esc(p.t)}</h2>
+    <p><span>${esc(p.f)} · ${esc(label(p, k))}</span><span class="yr-col"><span class="yr">${p.y}</span></span></p></div></article>`;
+}
+function card(p, k) {
+  const roles = label(p, k);
+  const pic = p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay preload="metadata" aria-hidden="true"></video>`
+    : p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : `<span class="ph" aria-hidden="true">${esc(p.t)}</span>`;
+  const extra = (p.laurel ? `<img class="laurel sm" src="${esc(p.laurel.src)}" alt="${esc(p.laurel.alt)}" width="758" height="688">` : "")
+    + (p.tag ? `<span class="slide-tag sm">${esc(p.tag)}</span>` : "");
+  return `<article class="card"><div class="frame">${pic}${extra}</div>
+    <div class="meta"><span class="t">${esc(p.t)}</span><span class="y">${p.y}</span></div>
+    <div class="sub">${esc(p.f)} · ${esc(roles)}</div></article>`;
+}
+function table(title, rows, keys) {
+  if (!rows.length) return "";
+  const tr = rows.map((p, i) => `<tr data-i="${P.indexOf(p)}" tabindex="0"><td class="n">${String(i + 1).padStart(2, "0")}</td><td>${esc(p.t)}</td><td>${esc(p.r.filter(k => !keys || keys.includes(k)).map(k => label(p, k)).join(" & "))}</td><td>${esc(p.f || "—")}</td><td class="y">${p.y}</td></tr>`).join("");
+  return `<div class="credits-side">${title ? `<h2>${esc(title)}</h2>` : ""}</div><div class="tbl"><table><colgroup><col class="c-n"><col><col class="c-r"><col class="c-d"><col class="c-y"></colgroup>
+    <tbody>${tr}</tbody></table></div>`;
+}
+for (const [id, cfg] of Object.entries(PAGES)) {
+  /* p.row = pages where a project is listed in the table instead of as a big panel */
+  const inRow = p => cfg.tableOnly ? p.r.includes(cfg.main) : (p.row || []).includes(cfg.main);
+  const main = P.filter(p => has(cfg.main)(p) && !inRow(p));
+  const keys = [...(cfg.crew || []), cfg.main];
+  const crew = P.filter(p => (cfg.crew && cfg.crew.some(k => p.r.includes(k))) || inRow(p));
+  const n = main.length + crew.length;
+  document.getElementById(id).innerHTML = `
+    <h1 class="sr-only" id="h-${cfg.main}">${esc(cfg.title)}</h1>
+    ${cfg.reel ? reelMarkup() : !main.length ? "" : cfg.full ? `<div class="slides">${main.map(p => slide(p, cfg.main)).join("")}</div>` : `<div class="cards">${main.map(p => card(p, cfg.main)).join("")}</div>`}
+    ${crew.length ? `<div class="credits">${table(cfg.crewTitle, crew, keys)}</div>` : ""}`;
+}
+
+/* ---- Montagem: one interactive showreel made of every edited project ----
+   each chapter plays a project's excerpt (p.clip, or p.reel = { src, from, to } for a cut of one long reel);
+   p.trailer / p.film add "Ver trailer" / "Ver filme" buttons for that chapter */
+function reelMarkup() {
+  return `<div class="reel" id="reel">
+    <video id="reel-v" muted playsinline preload="auto" aria-hidden="true"></video>
+    <div class="reel-ph" id="reel-ph" hidden><span id="reel-ph-t" hidden></span><small>Excerto por adicionar</small></div>
+    <button type="button" class="reel-hit" id="reel-hit" aria-label="Pausar ou continuar o showreel"></button>
+    <div class="reel-state" id="reel-state" aria-hidden="true">Pausa</div>
+    <div class="reel-top"><span class="reel-count" id="reel-count"></span><button type="button" id="reel-sound" aria-pressed="false">Som: não</button></div>
+    <div class="reel-cap">
+      <div class="reel-cap-l"><h2 id="reel-t"></h2><p id="reel-meta"></p></div>
+      <div class="reel-btns" id="reel-btns"></div>
+    </div>
+    <div class="reel-bar" id="reel-bar" role="group" aria-label="Projetos no showreel"></div>
+  </div>`;
+}
+
+/* ---- For fun: two loose columns of moving tiles; a tile opens the project ---- */
+const FUN = [
+  { t: "Flores", sub: "Tinta sobre papel", video: "media/flores-loop.mp4", poster: "media/flores-loop.jpg", ratio: "4 / 5",
+    images: [
+      { src: "media/flores-obra.jpg", alt: "A folha completa coberta de flores estampadas a amarelo, azul e bordeaux", w: 860, h: 1222 },
+      { src: "media/flores-det1.jpg", alt: "Pormenor de várias flores, com a textura da tinta", w: 560, h: 560 },
+      { src: "media/flores-det2.jpg", alt: "Pormenor de flores amarelas e bordeaux no canto da folha", w: 560, h: 560 }
+    ] },
+  { slot: true, ratio: "1 / 1" },
+  { slot: true, ratio: "3 / 4" },
+  { slot: true, ratio: "16 / 11" }
+];
+(() => {
+  const cols = document.getElementById("ff-cols"), open = document.getElementById("ff-open");
+  const colA = document.createElement("div"), colB = document.createElement("div");
+  colA.className = "ff-col"; colB.className = "ff-col ff-col-b"; cols.append(colA, colB);
+  FUN.forEach((p, i) => {
+    const el = document.createElement(p.slot ? "div" : "button");
+    el.className = "ff-tile" + (p.slot ? " ff-slot" : ""); el.style.aspectRatio = p.ratio;
+    el.style.setProperty("--tilt", ((i * 37) % 5 - 2) * 0.4 + "deg");
+    if (p.slot) { el.setAttribute("aria-hidden", "true"); el.innerHTML = "<span>Vídeo por adicionar</span>"; }
+    else {
+      el.type = "button"; el.setAttribute("aria-label", "Abrir " + p.t);
+      el.innerHTML = `<video src="${esc(p.video)}" poster="${esc(p.poster)}" muted loop playsinline autoplay preload="metadata" aria-hidden="true"></video><span class="ff-name">${esc(p.t)}</span>`;
+      el.addEventListener("click", () => show(p));
+    }
+    (i % 2 ? colB : colA).appendChild(el);
+  });
+  function show(p) {
+    document.getElementById("ff-title").textContent = p.t;
+    document.getElementById("ff-sub").textContent = p.sub || "";
+    document.getElementById("ff-gallery").innerHTML = p.images.map(m =>
+      `<img src="${esc(m.src)}" alt="${esc(m.alt)}" width="${m.w}" height="${m.h}" loading="lazy">`).join("");
+    open.hidden = false; open.scrollTop = 0; document.body.classList.add("ff-locked");
+    document.getElementById("ff-close").focus({ preventScroll: true });
+  }
+  function hide() { open.hidden = true; document.body.classList.remove("ff-locked"); }
+  document.getElementById("ff-close").addEventListener("click", hide);
+  addEventListener("keydown", e => { if (e.key === "Escape" && !open.hidden) hide(); });
+  addEventListener("hashchange", hide);
+  window.ffPlay = on => cols.querySelectorAll("video").forEach(v => {
+    v.muted = true; if (on) { const r = v.play(); if (r && r.catch) r.catch(() => {}); } else v.pause();
+  });
+})();
+
+const garden = (() => {
+  const v = document.getElementById("garden");
+  v.muted = true; v.defaultMuted = true; v.playsInline = true;
+  v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
+  let on = false;
+  const tryPlay = () => { if (!on || !v.paused) return; const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+  ["loadedmetadata", "canplay", "canplaythrough"].forEach(e => v.addEventListener(e, tryPlay));
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) tryPlay(); });
+  addEventListener("pageshow", tryPlay); addEventListener("focus", tryPlay);
+  /* some phones (e.g. Low Power Mode) block autoplay until the first touch: start on any interaction */
+  ["pointerdown", "touchstart", "keydown", "scroll", "wheel"].forEach(e => addEventListener(e, tryPlay, { passive: true }));
+  /* keep nudging for the first seconds in case the browser was not ready yet */
+  let tries = 0; const nudge = setInterval(() => { tryPlay(); if (++tries > 20 || !v.paused) clearInterval(nudge); }, 500);
+  return {
+    start() { on = true; v.hidden = false; tryPlay(); },
+    stop() { on = false; v.pause(); v.hidden = true; }
+  };
+})();
+
+const views = [...document.querySelectorAll("[data-view]")];
+
+const swb = document.getElementById("seework"), swm = document.getElementById("seework-menu");
+function setChoose(open) {
+  swb.setAttribute("aria-expanded", String(open)); swm.hidden = !open;
+  document.body.classList.toggle("choosing", open);
+  if (open) swm.querySelector("a").focus({ preventScroll: true }); else if (document.activeElement && swm.contains(document.activeElement)) swb.focus({ preventScroll: true });
+}
+swb.addEventListener("click", () => setChoose(swb.getAttribute("aria-expanded") !== "true"));
+document.getElementById("seework-close").addEventListener("click", () => setChoose(false));
+swm.addEventListener("click", e => { if (e.target === swm) setChoose(false); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !swm.hidden) setChoose(false); });
+
+function route() {
+  let id = (location.hash || "").replace("#", "");
+  if (id === "trabalho") id = "producao";
+  if (id === "oficina") id = "forfun";
+  if (!views.some(v => v.id === id)) id = "inicio";
+  swb.setAttribute("aria-expanded", "false"); swm.hidden = true; document.body.classList.remove("choosing");
+  views.forEach(v => v.hidden = v.id !== id);
+  const home = id === "inicio";
+  document.body.classList.toggle("is-home", home);
+  if (home) { requestAnimationFrame(() => { if (typeof alignK === "function") alignK(); }); garden.start(); } else { garden.stop(); }
+  if (window.ffPlay) window.ffPlay(id === "forfun");
+  if (window.reelActive) window.reelActive(id === "montagem");
+  requestAnimationFrame(() => window.fitAll && window.fitAll());
+  /* play the project videos of the page being shown, pause the rest */
+  document.querySelectorAll(".page[id] .cards video, .page[id] .slides video").forEach(v => {
+    v.muted = true;
+    if (v.closest(".page").id === id) { const r = v.play(); if (r && r.catch) r.catch(() => {}); } else v.pause();
+  });
+  document.querySelectorAll("header nav a").forEach(a => {
+    if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  const names = { producao: "Produção", montagem: "Montagem", realizacao: "Realização", forfun: "For fun", sobre: "Sobre" };
+  document.title = home ? "Kalinichenko" : names[id] + " · Kalinichenko";
+  window.scrollTo(0, 0);
+  if (typeof setHH === "function") requestAnimationFrame(setHH);
+}
+const setHH = () => document.documentElement.style.setProperty("--hh", document.querySelector("header").offsetHeight + "px");
+addEventListener("resize", setHH);
+addEventListener("hashchange", route);
+route(); setHH(); requestAnimationFrame(setHH);
+
+/* frame the line under the name with the actual ink edges of K and O */
+const sn = document.querySelector(".home .surname"), hr = document.querySelector(".home-roles");
+const hl = document.querySelector(".home-line"), nb = document.querySelector(".namebox");
+const cv = document.createElement("canvas").getContext("2d");
+const fontOf = el => { const c = getComputedStyle(el); return `${c.fontStyle} ${c.fontWeight} ${c.fontSize} ${c.fontFamily}`; };
+function charRect(el, i) {
+  const node = el.firstChild, r = document.createRange();
+  r.setStart(node, i); r.setEnd(node, i + 1); return r.getBoundingClientRect();
+}
+/* real ink extent of one glyph, found by drawing it and scanning pixels
+   (canvas text metrics under-report some side bearings) */
+function ink(ch, font, sizePx) {
+  const pad = Math.ceil(sizePx), W = Math.ceil(sizePx * 3), H = Math.ceil(sizePx * 2);
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d", { willReadFrequently: true });
+  x.font = font; x.textBaseline = "middle"; x.fillStyle = "#000";
+  x.fillText(ch, pad, H / 2);
+  const d = x.getImageData(0, 0, W, H).data;
+  let lo = -1, hi = -1;
+  for (let col = 0; col < W; col++) {
+    for (let row = 0; row < H; row++) { if (d[(row * W + col) * 4 + 3] > 40) { if (lo < 0) lo = col; hi = col + 1; break; } }
+  }
+  const adv = x.measureText(ch).width;
+  return lo < 0 ? { lsb: 0, rsb: 0 } : { lsb: lo - pad, rsb: (pad + adv) - hi };
+}
+function alignK() {
+  if (sn.offsetParent === null) return;               // home hidden
+  const txt = sn.firstChild.textContent;
+  const sF = fontOf(sn), sS = parseFloat(getComputedStyle(sn).fontSize);
+  const k = ink(txt[0], sF, sS), o = ink(txt[txt.length - 1], sF, sS);
+  const oR = charRect(sn, txt.length - 1);
+  const inkLeft = charRect(sn, 0).left + k.lsb;
+  cv.font = sF;
+  const inkRight = oR.left + cv.measureText(txt[txt.length - 1]).width - o.rsb;
+  const rF = fontOf(hr), rS = parseFloat(getComputedStyle(hr).fontSize);
+  const p = ink(hr.textContent.trim()[0], rF, rS);
+  const bF = fontOf(swb), bS = parseFloat(getComputedStyle(swb).fontSize);
+  const arTxt = swb.textContent.trim(), ar = ink(arTxt[arTxt.length - 1], bF, bS);
+  const box = nb.getBoundingClientRect();
+  hl.style.paddingLeft = Math.max(0, (inkLeft - box.left) - p.lsb) + "px";
+  hl.style.paddingRight = Math.max(0, (box.right - inkRight) - ar.rsb) + "px";
+}
+alignK();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(alignK);
+addEventListener("resize", alignK);
+
+/* hover a crew row on desktop: a moment of that project fills the screen behind the list.
+   add clip: "media/....mp4" (or img) to a project to show it; until then a quiet placeholder */
+(() => {
+  const peek = document.getElementById("peek"), fine = matchMedia("(hover: hover) and (min-width: 900px)");
+  let cur = null;
+  function on(tr) {
+    if (!fine.matches) return;
+    const p = P[+tr.dataset.i]; if (!p) return;
+    const box = tr.closest(".credits");
+    box.classList.add("peeking"); box.querySelectorAll("tr.on").forEach(r => r.classList.remove("on")); tr.classList.add("on");
+    if (cur !== p) {
+      cur = p;
+      peek.innerHTML = p.clip ? `<video src="${esc(p.clip)}" muted loop playsinline autoplay></video>`
+        : p.img ? `<img src="${esc(p.img)}" alt="">`
+        : `<div class="ph">${esc(p.t)}<small>Vídeo do projeto por adicionar</small></div>`;
+      const v = peek.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
+    }
+    peek.classList.add("on"); document.body.classList.add("peeking");
+  }
+  function off(box) {
+    box.classList.remove("peeking"); box.querySelectorAll("tr.on").forEach(r => r.classList.remove("on"));
+    peek.classList.remove("on"); document.body.classList.remove("peeking");
+    const v = peek.querySelector("video"); if (v) v.pause(); cur = null;
+  }
+  document.querySelectorAll(".credits tbody tr").forEach(tr => {
+    tr.addEventListener("mouseenter", () => on(tr)); tr.addEventListener("focus", () => on(tr));
+  });
+  document.querySelectorAll(".credits tbody").forEach(tb => {
+    const box = tb.closest(".credits");
+    tb.addEventListener("mouseleave", () => off(box));
+    tb.addEventListener("focusout", e => { if (!tb.contains(e.relatedTarget)) off(box); });
+  });
+  addEventListener("hashchange", () => document.querySelectorAll(".credits").forEach(off));
+})();
+
+(() => {
+  const root = document.getElementById("reel"); if (!root) return;
+  const v = document.getElementById("reel-v"), ph = document.getElementById("reel-ph");
+  const bar = document.getElementById("reel-bar"), state = document.getElementById("reel-state");
+  const PH_DUR = 4;                                   // seconds a chapter without footage stays on screen
+  const ch = P.filter(p => p.r.includes("mont")).map(p => {
+    const r = p.reel || (p.clip ? { src: p.clip } : null);
+    return { p, src: r && r.src, from: (r && r.from) || 0, to: r && r.to, dur: r ? null : PH_DUR };
+  });
+  let i = 0, paused = false, phStart = 0, phElapsed = 0, raf = 0, active = false;
+  bar.innerHTML = ch.map((c, k) => `<button type="button" class="seg" data-k="${k}" aria-label="${esc(c.p.t)}"><i></i></button>`).join("");
+  const segs = [...bar.children];
+  const durOf = c => c.dur || ((c.to || v.duration || 6) - c.from);
+  function paint(k) {
+    const c = ch[k], p = c.p;
+    document.getElementById("reel-t").textContent = p.t;
+    document.getElementById("reel-meta").textContent = [p.f, label(p, "mont"), p.y].join(" · ");
+    requestAnimationFrame(() => window.fitAll && window.fitAll());
+    document.getElementById("reel-count").textContent = String(k + 1).padStart(2, "0") + " / " + String(ch.length).padStart(2, "0");
+    const b = [];
+    if (p.trailer) b.push(`<a href="${esc(p.trailer)}" target="_blank" rel="noopener">Ver trailer →</a>`);
+    if (p.film) b.push(`<a href="${esc(p.film)}" target="_blank" rel="noopener">Ver filme →</a>`);
+    document.getElementById("reel-btns").innerHTML = b.join("");
+    segs.forEach((s, j) => { s.classList.toggle("done", j < k); s.classList.toggle("on", j === k); if (j !== k) s.firstChild.style.width = j < k ? "100%" : "0"; });
+  }
+  function go(k) {
+    i = (k + ch.length) % ch.length; const c = ch[i];
+    paint(i);
+    if (c.src) {
+      ph.hidden = true; v.hidden = false;
+      const start = () => { try { v.currentTime = c.from; } catch (e) {} if (!paused) play(); };
+      if (!v.src.endsWith(c.src)) { v.src = c.src; v.addEventListener("loadedmetadata", start, { once: true }); } else start();
+    } else {
+      v.pause(); v.hidden = true; ph.hidden = false;
+      document.getElementById("reel-ph-t").textContent = c.p.t; phElapsed = 0; phStart = performance.now();
+    }
+  }
+  function play() { v.muted = !sound; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
+  function tick(now) {
+    if (!active) return;
+    const c = ch[i];
+    let t;
+    if (c.src) {
+      t = (v.currentTime - c.from) / durOf(c);
+      if ((c.to && v.currentTime >= c.to) || v.ended) { go(i + 1); }
+    } else {
+      const el = paused ? phElapsed : phElapsed + (now - phStart) / 1000;
+      t = el / c.dur;
+      if (t >= 1) go(i + 1);
+    }
+    if (segs[i]) segs[i].firstChild.style.width = Math.max(0, Math.min(1, t || 0)) * 100 + "%";
+    raf = requestAnimationFrame(tick);
+  }
+  function setPaused(x) {
+    const c = ch[i];
+    if (!c.src) { if (x && !paused) phElapsed += (performance.now() - phStart) / 1000; if (!x && paused) phStart = performance.now(); }
+    paused = x; root.classList.toggle("paused", x);
+    state.textContent = x ? "Pausa" : "";
+    if (c.src) { x ? v.pause() : play(); }
+  }
+  let sound = false;
+  document.getElementById("reel-sound").addEventListener("click", e => {
+    sound = !sound; v.muted = !sound; e.currentTarget.textContent = "Som: " + (sound ? "sim" : "não");
+    e.currentTarget.setAttribute("aria-pressed", String(sound));
+  });
+  document.getElementById("reel-hit").addEventListener("click", () => setPaused(!paused));
+  bar.addEventListener("click", e => { const b = e.target.closest(".seg"); if (b) go(+b.dataset.k); });
+  addEventListener("keydown", e => {
+    if (!active || e.target.closest("input, textarea")) return;
+    if (e.key === " ") { e.preventDefault(); setPaused(!paused); }
+    if (e.key === "ArrowRight") go(i + 1);
+    if (e.key === "ArrowLeft") go(i - 1);
+  });
+  window.reelActive = on => {
+    active = on; cancelAnimationFrame(raf);
+    if (on) { go(i); raf = requestAnimationFrame(tick); }
+    else v.pause();
+  };
+})();
+
+/* keep big titles on one line: shrink the font until the text fits its box */
+function fitLine(el) {
+  if (!el || !el.offsetParent) return;
+  el.style.fontSize = "";
+  const box = el.parentElement.clientWidth || el.clientWidth;
+  const w = el.scrollWidth;
+  if (w > box && box > 0) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * box / w * 0.98) + "px";
+}
+const fitAll = () => document.querySelectorAll(".slide-cap h2, .reel-cap h2").forEach(fitLine);
+addEventListener("resize", fitAll);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+window.fitAll = fitAll;
+
+/* "Ver mais" on the full-screen panels opens the project */
+(() => {
+  const box = document.getElementById("proj"), media = document.getElementById("proj-media");
+  function open(p, k) {
+    document.getElementById("proj-t").textContent = p.t;
+    document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("");
+    media.innerHTML = p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay controls></video>`
+      : p.img ? `<img src="${esc(p.img)}" alt="">` : "";
+    if (p.film) media.insertAdjacentHTML("beforeend",
+      `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
+    document.getElementById("proj-note").hidden = !!p.film;
+    const v = media.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
+    box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
+    document.getElementById("proj-close").focus({ preventScroll: true });
+  }
+  function close() { box.hidden = true; media.innerHTML = ""; document.body.classList.remove("proj-on"); }
+  document.addEventListener("click", e => {
+    const b = e.target.closest(".more"); if (!b) return;
+    open(P[+b.dataset.i], b.dataset.k);
+  });
+  document.getElementById("proj-close").addEventListener("click", close);
+  addEventListener("keydown", e => { if (e.key === "Escape" && !box.hidden) close(); });
+  addEventListener("hashchange", close);
+})();
+
+document.getElementById("copy").addEventListener("click", async e => {
+  const b = e.currentTarget, m = document.getElementById("mail");
+  try { await navigator.clipboard.writeText(m.textContent); b.textContent = "Copiado"; }
+  catch (err) { const r = document.createRange(); r.selectNodeContents(m); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selecionado"; }
+  setTimeout(() => b.textContent = "Copiar", 1600);
+});
+</script>
+</body>
+</html>
