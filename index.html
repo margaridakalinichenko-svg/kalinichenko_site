@@ -224,7 +224,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 .reel-cap h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(2.6rem, 8vw, 8rem); line-height: .82; margin: 0 0 14px; }
 .reel-cap p { margin: 0; }
 .reel-btns { display: flex; gap: 20px; pointer-events: auto; }
-.reel-btns a { opacity: .85; } .reel-btns a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.reel-btns a, .reel-btns button { opacity: .85; } .reel-btns a:hover, .reel-btns button:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
 .reel-bar { position: absolute; z-index: 2; left: clamp(16px, 4.5vw, 64px); right: clamp(16px, 4.5vw, 64px); bottom: clamp(16px, 2vw, 26px);
   display: flex; gap: 4px; }
 .reel-bar .seg { flex: 1; height: 14px; display: flex; align-items: center; cursor: pointer; }
@@ -419,7 +419,7 @@ const P = [
   { y: 2025, t: "Victoria Leuca – Só", f: "Videoclipe", r: ["prod"], clip: "media/so.mp4", img: "media/so.jpg" },
   { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro" },
   { y: 2025, t: "Bye Bye Bacchus", f: "Curta-metragem", r: ["real", "mont"], clip: "media/bacchus.mp4", img: "media/bacchus.jpg", noMore: true,
-    note: "Atualmente no circuito de festivais", trailer: "",
+    note: "Atualmente no circuito de festivais", trailer: "", youtube: "gkFoigKYY_o", youtubeLabel: "Ver trailer",
     laurel: { src: "media/louro-31ccp.png", alt: "Menção honrosa, Ensaio Nacional, 31.º Caminhos do Cinema Português, Coimbra 2025" } },
   /* (escondido por agora) { y: 2025, t: "A Quinta da Lage", f: "Documentário", r: ["mont"] }, */
   { y: 2025, t: "Eugénio de Andrade", f: "Documentário", r: ["mont"] },
@@ -708,6 +708,7 @@ addEventListener("resize", alignK);
     const b = [];
     if (p.trailer) b.push(`<a href="${esc(p.trailer)}" target="_blank" rel="noopener">Ver trailer →</a>`);
     if (p.film) b.push(`<a href="${esc(p.film)}" target="_blank" rel="noopener">Ver filme →</a>`);
+    if (p.youtube && !p.trailer) b.push(`<button type="button" class="more" data-i="${P.indexOf(p)}" data-k="mont">${esc(p.youtubeLabel || "Ver filme")} →</button>`);
     document.getElementById("reel-btns").innerHTML = b.join("");
     segs.forEach((s, j) => { s.classList.toggle("done", j < k); s.classList.toggle("on", j === k); if (j !== k) s.firstChild.style.width = j < k ? "100%" : "0"; });
   }
