@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kalinichenko</title>
-<meta name="description" content="Margarida Kalinichenko — produção, realização e montagem.">
+<meta name="description" content="Margarida Kalinichenko — produção e realização.">
 <meta property="og:title" content="Kalinichenko">
-<meta property="og:description" content="Produção · Realização · Montagem">
+<meta property="og:description" content="Produção · Realização">
 <meta property="og:image" content="media/fundo-2-poster.jpg">
 <style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 </head>
@@ -415,7 +415,7 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
     <nav class="depts" aria-label="Departamentos">
       <a href="#producao">Produção</a>
       <a href="#realizacao">Realização</a>
-      <a href="#montagem">Montagem</a>
+      <!-- Montagem hidden for now (HIDE_MONTAGEM) --><!-- <a href="#montagem">Montagem</a> -->
     </nav>
     <nav class="extra" aria-label="Mais">
       <!-- For fun hidden for now: restore this link and remove HIDE_FORFUN below -->
@@ -428,7 +428,7 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
       <div class="namebox">
         <h1 class="surname">KALINICHENKO</h1>
         <div class="home-line">
-        <p class="home-roles">Produção · Realização · Montagem</p>
+        <p class="home-roles">Produção · Realização</p>
         <div class="seework">
           <button type="button" id="seework" aria-expanded="false" aria-controls="seework-menu">Ver trabalho →</button>
         </div>
@@ -438,7 +438,7 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
         <ul>
           <li><a href="#producao">Produção</a></li>
           <li><a href="#realizacao">Realização</a></li>
-          <li><a href="#montagem">Montagem</a></li>
+          <!-- <li><a href="#montagem">Montagem</a></li> HIDE_MONTAGEM -->
         </ul>
         <button type="button" class="choose-close" id="seework-close">Fechar</button>
       </div>
@@ -680,7 +680,8 @@ function route() {
   if (choosing) id = "inicio";
   if (id === "trabalho") id = "producao";
   if (id === "oficina") id = "forfun";
-  if (id === "forfun") id = "inicio";               /* HIDE_FORFUN: page hidden for now */
+  if (id === "forfun") id = "inicio";
+  if (id === "montagem") id = "inicio";              /* HIDE_MONTAGEM: page hidden for now */               /* HIDE_FORFUN: page hidden for now */
   if (!views.some(v => v.id === id)) id = "inicio";
   swb.setAttribute("aria-expanded", "false"); swm.hidden = true; document.body.classList.remove("choosing");
   views.forEach(v => v.hidden = v.id !== id);
