@@ -220,7 +220,6 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj .media .watch .play { width: 0; height: 0; border-style: solid; border-width: 18px 0 18px 30px; border-color: transparent transparent transparent var(--fg); }
 body.proj-on { overflow: hidden; }
 html:has(#realizacao:not([hidden])) { scroll-snap-type: y mandatory; }
-body:has(#realizacao:not([hidden])) footer { display: none; }
 body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 .slide, .slides + .credits { scroll-snap-stop: always; }
 /* after the full-screen projects, the crew list gets a full screen of its own */
@@ -305,6 +304,9 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
   .credits.narrow .tbl td:nth-child(2), .credits.narrow .tbl td:nth-child(3) { white-space: normal; }   /* long names wrap instead of pushing the year out */
 }
 @media (min-width: 1200px) { .credits.narrow { grid-template-columns: minmax(0, 9fr) minmax(0, 11fr) !important; } }
+/* Realização: the footer sits at the bottom of the same screen as the list */
+body:has(#realizacao:not([hidden])) .layer > footer { margin-top: 0; padding-bottom: 24px; scroll-snap-align: end; }
+html body #realizacao .slides + .credits { min-height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px) - 46px); }
 /* full-screen moment from the project behind the list (desktop hover) */
 .peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
 .peek.on { opacity: 1; }
@@ -490,7 +492,7 @@ const P = [
   { y: 2026, t: "CANSO “Airspace World 2026”", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DZUg0fFif3A" },
   { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
   { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel", clip: "media/ultimo-canto.mp4", img: "media/ultimo-canto.jpg", festival: true, noOpen: true, peekLabel: "Atualmente em circuito de festivais" },
-  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite-preview.mp4", img: "media/noite-preview.jpg", video: "media/noite.mp4", poster: "media/noite.jpg", sound: true, festival: true },
+  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite-preview-2.mp4", img: "media/noite-preview-2.jpg", video: "media/noite.mp4", poster: "media/noite.jpg", sound: true, festival: true },
   { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ" },
   { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan", festival: true, noOpen: true, peekLabel: "Atualmente em circuito de festivais" },
   { y: 2025, t: "CANSO “Airspace World 2025”", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DJ9iX6gMl15" },
