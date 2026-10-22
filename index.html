@@ -418,6 +418,7 @@ body.ff-locked { overflow: hidden; }
 body.editing .scatter { display: block; position: relative; z-index: 1; padding: 0; }   /* own layer: photos stay under the menu */
 body.editing .scatter > * { position: absolute; margin: 0 !important; transform: none !important; touch-action: none; user-select: none; outline: 1px dashed rgba(255,255,255,.35); }
 body.editing .scatter > *:hover { outline: 1px solid #fff; }
+body.editing .scatter > .ed-sel { outline: 2px solid #fff; outline-offset: 2px; }
 .ed-bar { position: fixed; z-index: 50; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
   background: rgba(20,20,20,.92); border: 1px solid #333; padding: 10px 14px; border-radius: 6px; max-width: calc(100vw - 32px); }
 .ed-bar span { color: var(--dim); } .ed-bar button { border: 1px solid #555; padding: 6px 10px; border-radius: 4px; } .ed-bar button:hover { border-color: #fff; }
@@ -1050,20 +1051,21 @@ document.getElementById("copy").addEventListener("click", async e => {
   items.forEach(el => { el.loading = "eager"; if (el.tagName === "IMG") el.removeAttribute("loading"); });
   const bar = document.createElement("div"); bar.className = "ed-bar";
   bar.innerHTML = `<span>Modo de edição · arrasta para mover · canto de baixo à direita para mudar o tamanho · clica para pôr à frente</span>
-    <button type="button" data-a="copy">Copiar disposição</button><button type="button" data-a="reset">Repor</button>`;
+    <button type="button" data-a="del">Apagar foto selecionada</button><button type="button" data-a="copy">Copiar disposição</button><button type="button" data-a="reset">Repor</button>`;
   document.body.appendChild(bar);
   let z = 10;
   const W = () => box.clientWidth;
   function fitH() { let m = 0; items.forEach(el => m = Math.max(m, el.offsetTop + el.offsetHeight)); box.style.height = (m + 40) + "px"; }
   function place(el, d) { el.style.left = d.x * W() / 100 + "px"; el.style.top = d.y * W() / 100 + "px"; el.style.width = d.w * W() / 100 + "px"; el.style.zIndex = d.z || 1; }
-  function data(el) { return { src: el.getAttribute("src"), x: +(el.offsetLeft / W() * 100).toFixed(2), y: +(el.offsetTop / W() * 100).toFixed(2), w: +(el.offsetWidth / W() * 100).toFixed(2), z: +el.style.zIndex || 1 }; }
+  let sel = null;
+  function data(el) { return { hidden: el.hidden || undefined, src: el.getAttribute("src"), x: +(el.offsetLeft / W() * 100).toFixed(2), y: +(el.offsetTop / W() * 100).toFixed(2), w: +(el.offsetWidth / W() * 100).toFixed(2), z: +el.style.zIndex || 1 }; }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(items.map(data))); } catch (e) {} }
   function start() {
     const br = box.getBoundingClientRect();
     const first = items.map(el => { const r = el.getBoundingClientRect(); return { x: (r.left - br.left) / W() * 100, y: (r.top - br.top) / W() * 100, w: r.width / W() * 100, z: 1 }; });
     let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
     document.body.classList.add("editing");
-    items.forEach((el, i) => { const d = (saved && saved.find(s => s.src === el.getAttribute("src"))) || first[i]; place(el, d); z = Math.max(z, d.z || 1); });
+    items.forEach((el, i) => { const d = (saved && saved.find(s => s.src === el.getAttribute("src"))) || first[i]; place(el, d); z = Math.max(z, d.z || 1); if (d.hidden) el.hidden = true; });
     fitH();
   }
   let drag = null;
@@ -1073,6 +1075,7 @@ document.getElementById("copy").addEventListener("click", async e => {
     el.addEventListener("pointerdown", e => {
       e.preventDefault(); const r = el.getBoundingClientRect();
       el.style.zIndex = ++z; el.setPointerCapture(e.pointerId);
+      if (sel) sel.classList.remove("ed-sel"); sel = el; el.classList.add("ed-sel");
       drag = { el, mode: (r.right - e.clientX < 22 && r.bottom - e.clientY < 22) ? "size" : "move", x0: e.clientX, y0: e.clientY, l: el.offsetLeft, t: el.offsetTop, w: el.offsetWidth };
     });
     el.addEventListener("pointermove", e => {
@@ -1086,6 +1089,7 @@ document.getElementById("copy").addEventListener("click", async e => {
   });
   bar.addEventListener("click", async e => {
     const a = e.target.dataset.a; if (!a) return;
+    if (a === "del") { if (sel) { sel.hidden = true; sel.classList.remove("ed-sel"); sel = null; save(); fitH(); } else { e.target.textContent = "Clica primeiro numa foto"; setTimeout(() => e.target.textContent = "Apagar foto selecionada", 1800); } return; }
     if (a === "reset") { try { localStorage.removeItem(KEY); } catch (er) {} location.reload(); return; }
     const txt = JSON.stringify({ width: W(), items: items.map(data) });
     try { await navigator.clipboard.writeText(txt); e.target.textContent = "Copiado! Cola na conversa"; }
