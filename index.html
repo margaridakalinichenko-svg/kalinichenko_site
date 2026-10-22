@@ -600,7 +600,8 @@ const DICT = {
   }
 };
 const NAMES_RU = { "Kali": "Кали" };
-function tr(s) {
+function tr(s) { return translate(s); }
+function translate(s) {
   if (LANG === "pt" || !s) return s;
   const d = DICT[LANG];
   if (d[s] != null) return d[s];
@@ -843,7 +844,7 @@ document.querySelectorAll('header a[href^="#"]').forEach(a => a.addEventListener
   if (a.getAttribute("href") === location.hash) { window.scrollTo(0, 0); }
 }));
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-addEventListener("load", () => { if (location.hash) window.scrollTo(0, 0); });
+addEventListener("load", () => { if (location.hash && scrollY < 200) window.scrollTo(0, 0); });   /* only undo the browser's own jump, never a scroll the visitor already made */
 route(); setHH(); requestAnimationFrame(setHH);
 
 /* frame the line under the name with the actual ink edges of K and O */
@@ -909,7 +910,7 @@ addEventListener("resize", alignK);
         : "";   /* no footage yet: plain black */
       /* peekLabel: text for every table, or { pageId: text } for some pages only */
       const pl = typeof p.peekLabel === "string" ? p.peekLabel : (p.peekLabel || {})[(tr.closest(".page") || {}).id];
-      if (pl) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(tr(pl))}</span>`);
+      if (pl) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(translate(pl))}</span>`);
       place(box);
       const v = peek.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     }
