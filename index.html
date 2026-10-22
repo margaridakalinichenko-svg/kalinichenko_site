@@ -786,7 +786,7 @@ window.fitAll = fitAll;
     document.getElementById("proj-t").textContent = p.t;
     document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("");
     media.innerHTML = p.youtube
-      ? `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.youtube)}?rel=0&modestbranding=1&playsinline=1" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`
+      ? `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.youtube)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`
       : p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay controls></video>`
       : p.img ? `<img src="${esc(p.img)}" alt="">` : "";
     if (p.film) media.insertAdjacentHTML("beforeend",
