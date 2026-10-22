@@ -180,6 +180,7 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 9vw, 8rem); line-height: .85; margin: 24px 0 12px; }
 .proj .meta { color: var(--dim); display: flex; gap: 8px 24px; flex-wrap: wrap; margin-bottom: 28px; }
 .proj .media { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--card); }
+.proj .media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .proj .media video, .proj .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .proj .note { color: #555; margin-top: 18px; }
 .proj .media .watch { position: absolute; inset: 0; z-index: 1; display: grid; place-content: center; justify-items: center; gap: 14px;
@@ -414,7 +415,7 @@ const P = [
   { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan" },
   { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" } },
   { y: 2025, t: "Chulé", f: "Publicidade", r: ["prod", "real"], clip: "media/chule.mp4", img: "media/chule.jpg",
-    film: "https://www.instagram.com/reel/DPTunLQDdqE/", filmWhere: "Instagram" },
+    youtube: "HF8i05qGSTA" },
   { y: 2025, t: "Victoria Leuca – Só", f: "Videoclipe", r: ["prod"], clip: "media/so.mp4", img: "media/so.jpg" },
   { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro" },
   { y: 2025, t: "Bye Bye Bacchus", f: "Curta-metragem", r: ["real", "mont"], clip: "media/bacchus.mp4", img: "media/bacchus.jpg", noMore: true,
@@ -784,11 +785,13 @@ window.fitAll = fitAll;
   function open(p, k) {
     document.getElementById("proj-t").textContent = p.t;
     document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("");
-    media.innerHTML = p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay controls></video>`
+    media.innerHTML = p.youtube
+      ? `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.youtube)}?rel=0&modestbranding=1&playsinline=1" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`
+      : p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay controls></video>`
       : p.img ? `<img src="${esc(p.img)}" alt="">` : "";
     if (p.film) media.insertAdjacentHTML("beforeend",
       `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
-    document.getElementById("proj-note").hidden = !!p.film;
+    document.getElementById("proj-note").hidden = !!(p.film || p.youtube);
     const v = media.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
     document.getElementById("proj-close").focus({ preventScroll: true });
