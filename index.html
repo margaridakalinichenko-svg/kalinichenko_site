@@ -201,6 +201,7 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj { position: fixed; inset: 0; z-index: 20; background: var(--bg); overflow-y: auto;
   padding: calc(env(safe-area-inset-top, 0px) + 28px) clamp(16px, 4.5vw, 64px) 64px; animation: chooseIn .35s ease both; }
 .proj:not([hidden]) { display: flex; flex-direction: column; padding-bottom: 28px; }
+.proj > * { flex-shrink: 0; }   /* nothing gets squashed when the page is taller than the screen */
 .proj .proj-foot { margin-top: auto; padding-top: 64px; display: flex !important; }   /* shown on every page, also Realização */
 .proj-bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .proj-bar button { color: var(--dim); } .proj-bar button:hover { color: var(--fg); }
@@ -211,6 +212,8 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj .media.ig { aspect-ratio: auto; width: min(100%, 420px); height: min(78svh, 760px); margin-inline: auto; background: #fff; border-radius: 4px; overflow: hidden; }
 .proj .media.igs { aspect-ratio: auto; background: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .proj .media.igs iframe { position: static !important; width: 100%; height: min(78svh, 700px); border: 0; background: #fff; border-radius: 4px; }
+/* igWide: a landscape Instagram reel shown large, cropped to the account bar + the video (no white card below) */
+.proj .media.ig.igw { width: min(100%, calc((100svh - 300px) * 16 / 9)); height: auto; margin-inline: 0; background: #000; border-radius: 0; }
 .proj .media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .proj .media video, .proj .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .proj .note { color: #555; margin-top: 18px; }
@@ -505,13 +508,13 @@ const ROLE = { prod: "Produção", real: "Realização", mont: "Montagem", arte:
 /* d = who directed it (for crew credits); img = still for the rectangle when available */
 const P = [
   { y: 2026, t: "Banco BPI x RiR", with: "Com Lagosta Tranquina", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagrams: ["DaPsGqCIeWY", "DZ5VzHytdf0", "DaS_cqPNSIO"] },
-  { y: 2026, t: "CANSO “Airspace World 2026”", with: "Com Lagosta Tranquina", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DZUg0fFif3A" },
+  { y: 2026, t: "CANSO “Airspace World 2026”", with: "Com Lagosta Tranquina", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DZUg0fFif3A", igWide: true },
   { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
   { y: 2026, t: "Último Canto", credit: ["Realizado por José Miguel"], f: "Curta-metragem", r: ["anot"], d: "José Miguel", clip: "media/ultimo-canto.mp4", img: "media/ultimo-canto.jpg", festival: true, noOpen: true, peekLabel: "Atualmente em circuito de festivais" },
   { y: 2026, t: "A Noite em que Aprendi a Voar", credit: ["Realizado por Huenu"], f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite-preview-2.mp4", img: "media/noite-preview-2.jpg", video: "media/noite.mp4", poster: "media/noite.jpg", sound: true, festival: true },
   { y: 2026, t: "Spot Nacional 2026 Lusófona", credit: ["Realizado por João Severo"], f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ" },
   { y: 2026, t: "Em Chamas", credit: ["Realizado por Ármik Israyelyan"], f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan", festival: true, noOpen: true, peekLabel: "Atualmente em circuito de festivais" },
-  { y: 2025, t: "CANSO “Airspace World 2025”", with: "Com Lagosta Tranquina", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DJ9iX6gMl15" },
+  { y: 2025, t: "CANSO “Airspace World 2025”", with: "Com Lagosta Tranquina", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DJ9iX6gMl15", igWide: true },
   { y: 2025, t: "Lote 28", credit: ["Realizado por Afonso Matos e Pedro Fuscas"], f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" }, youtube: "wpmgNHWvtc8", clip: "media/lote28.mp4", img: "media/lote28.jpg" },
   { y: 2025, t: "Chulé", f: "Publicidade", r: ["prod", "real"], clip: "media/chule.mp4", img: "media/chule.jpg",
     credit: ["Realizado por Kali"],
@@ -713,6 +716,7 @@ function route() {
 const setHH = () => document.documentElement.style.setProperty("--hh", document.querySelector("header").offsetHeight + "px");
 addEventListener("resize", setHH);
 addEventListener("hashchange", route);
+addEventListener("resize", () => window.__igFit && window.__igFit());
 /* clicking the section you're already on (or KALI) also takes you back to the top */
 document.querySelectorAll('header a[href^="#"]').forEach(a => a.addEventListener("click", () => {
   if (a.getAttribute("href") === location.hash) { window.scrollTo(0, 0); }
@@ -936,6 +940,9 @@ window.fitAll = fitAll;
     document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.with, p.y].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")   /* p.with: partner, right after the role */
       + (p.festival ? `<span class="fest">Atualmente no circuito de festivais</span>` : "");
     media.classList.toggle("ig", !!p.instagram && !p.youtube);
+    media.classList.toggle("igw", !!p.igWide);
+    media.style.height = "";
+    if (p.igWide) { const fit = () => { if (media.classList.contains("igw")) media.style.height = Math.round(media.clientWidth * 9 / 16 + 56) + "px"; }; requestAnimationFrame(fit); window.__igFit = fit; }
     media.classList.toggle("igs", !!p.instagrams);   /* several reels side by side */   /* vertical reel instead of a 16:9 frame */
     media.innerHTML = p.instagrams
       ? p.instagrams.map(id => `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(id)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe>`).join("")
