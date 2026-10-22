@@ -272,6 +272,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
   .credits.narrow .tbl col { width: auto !important; }
   .credits.narrow .tbl td { font-size: 12.5px; overflow: visible; text-overflow: clip; padding-right: 16px; }
   .credits.narrow .tbl td.y { padding-right: 0; }
+  .credits.narrow .tbl td:nth-child(2), .credits.narrow .tbl td:nth-child(3) { white-space: normal; }   /* long names wrap instead of pushing the year out */
 }
 @media (min-width: 1200px) { .credits.narrow { grid-template-columns: minmax(0, 9fr) minmax(0, 11fr) !important; } }
 /* full-screen moment from the project behind the list (desktop hover) */
