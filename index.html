@@ -787,7 +787,7 @@ addEventListener("resize", alignK);
   });
   addEventListener("hashchange", () => document.querySelectorAll(".credits").forEach(off));
 
-  /* phones / touch: no hover, so the rows take turns by themselves, one every 5 seconds,
+  /* phones / touch: no hover, so the rows take turns by themselves, one every 3.5 seconds,
      while the table is on screen; the chosen title stays white and its footage fills the background */
   let timer = 0, live = null, k = 0;
   function stop() { clearInterval(timer); timer = 0; if (live) off(live); live = null; }
@@ -796,7 +796,7 @@ addEventListener("resize", alignK);
     stop(); live = box; k = 0;
     const rows = [...box.querySelectorAll("tbody tr")]; if (!rows.length) return;
     const step = () => { if (!document.body.contains(box) || box.offsetParent === null) return stop(); on(rows[k % rows.length], true); k++; };
-    step(); timer = setInterval(step, 5000);
+    step(); timer = setInterval(step, 3500);
   }
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting && e.intersectionRatio > 0.5) start(e.target);
