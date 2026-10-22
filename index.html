@@ -177,9 +177,7 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
   padding: calc(env(safe-area-inset-top, 0px) + 28px) clamp(16px, 4.5vw, 64px) 64px; animation: chooseIn .35s ease both; }
 .proj-bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .proj-bar button { color: var(--dim); } .proj-bar button:hover { color: var(--fg); }
-.proj-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 32px; }
-.proj-fest { margin-top: 24px; flex: none; text-align: right; opacity: .6; letter-spacing: .08em; text-transform: uppercase; }
-@media (max-width: 700px) { .proj-head { flex-direction: column-reverse; } .proj-fest { align-self: flex-end; margin: 18px 0 -8px; } }
+.proj .meta .fest { margin-left: auto; text-align: right; color: var(--fg); opacity: .6; letter-spacing: .08em; }
 .proj h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 9vw, 8rem); line-height: .85; margin: 24px 0 12px; }
 .proj .meta { color: var(--dim); display: flex; gap: 8px 24px; flex-wrap: wrap; margin-bottom: 28px; }
 .proj .media { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--card); }
@@ -338,7 +336,7 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
 <div class="peek" id="peek" aria-hidden="true"></div>
 <div class="proj" id="proj" role="dialog" aria-modal="true" aria-labelledby="proj-t" hidden>
   <div class="proj-bar"><span>KALI</span><button type="button" id="proj-close">Fechar</button></div>
-  <div class="proj-head"><h2 id="proj-t"></h2><p class="proj-fest" id="proj-fest" hidden></p></div>
+  <h2 id="proj-t"></h2>
   <div class="meta" id="proj-meta"></div>
   <div class="media" id="proj-media"></div>
   <p class="note" id="proj-note">Sinopse, ficha técnica e link para o filme por adicionar</p>
@@ -796,8 +794,8 @@ window.fitAll = fitAll;
   const box = document.getElementById("proj"), media = document.getElementById("proj-media");
   function open(p, k) {
     document.getElementById("proj-t").textContent = p.t;
-    const fest = document.getElementById("proj-fest"); fest.hidden = !p.festival; fest.textContent = p.festival ? "Atualmente no circuito de festivais" : "";
-    document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("");
+    document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("")
+      + (p.festival ? `<span class="fest">Atualmente no circuito de festivais</span>` : "");
     media.classList.toggle("ig", !!p.instagram && !p.youtube);   /* vertical reel instead of a 16:9 frame */
     media.innerHTML = p.instagram && !p.youtube
       ? `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(p.instagram)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe>`
