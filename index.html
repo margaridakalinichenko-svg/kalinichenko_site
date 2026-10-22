@@ -530,13 +530,16 @@ const FUN = [
     document.getElementById("ff-sub").textContent = p.sub || "";
     document.getElementById("ff-gallery").innerHTML = p.images.map(m =>
       `<img src="${esc(m.src)}" alt="${esc(m.alt)}" width="${m.w}" height="${m.h}" loading="lazy">`).join("");
+    if (open.hidden) history.pushState({ kaliOverlay: "ff" }, "");
     open.hidden = false; open.scrollTop = 0; document.body.classList.add("ff-locked");
     document.getElementById("ff-close").focus({ preventScroll: true });
   }
-  function hide() { open.hidden = true; document.body.classList.remove("ff-locked"); }
+  function shut() { open.hidden = true; document.body.classList.remove("ff-locked"); }
+  function hide() { if (open.hidden) return; if (history.state && history.state.kaliOverlay === "ff") history.back(); else shut(); }
+  addEventListener("popstate", () => { if (!open.hidden) shut(); });
   document.getElementById("ff-close").addEventListener("click", hide);
   addEventListener("keydown", e => { if (e.key === "Escape" && !open.hidden) hide(); });
-  addEventListener("hashchange", hide);
+  addEventListener("hashchange", shut);
   window.ffPlay = on => cols.querySelectorAll("video").forEach(v => {
     v.muted = true; if (on) { const r = v.play(); if (r && r.catch) r.catch(() => {}); } else v.pause();
   });
@@ -794,17 +797,20 @@ window.fitAll = fitAll;
       `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
     document.getElementById("proj-note").hidden = !!(p.film || p.youtube);
     const v = media.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
+    if (box.hidden) history.pushState({ kaliOverlay: "proj" }, "");   /* back arrow closes the project instead of leaving the page */
     box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
     document.getElementById("proj-close").focus({ preventScroll: true });
   }
-  function close() { box.hidden = true; media.innerHTML = ""; document.body.classList.remove("proj-on"); }
+  function shut() { box.hidden = true; media.innerHTML = ""; document.body.classList.remove("proj-on"); }
+  function close() { if (box.hidden) return; if (history.state && history.state.kaliOverlay === "proj") history.back(); else shut(); }
+  addEventListener("popstate", () => { if (!box.hidden) shut(); });
   document.addEventListener("click", e => {
     const b = e.target.closest(".more"); if (!b) return;
     open(P[+b.dataset.i], b.dataset.k);
   });
   document.getElementById("proj-close").addEventListener("click", close);
   addEventListener("keydown", e => { if (e.key === "Escape" && !box.hidden) close(); });
-  addEventListener("hashchange", close);
+  addEventListener("hashchange", shut);
 })();
 
 document.getElementById("copy").addEventListener("click", async e => {
