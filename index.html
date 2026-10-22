@@ -810,7 +810,7 @@ addEventListener("resize", alignK);
       cur = p;
       peek.innerHTML = p.clip ? `<video src="${esc(p.clip)}" muted loop playsinline autoplay></video>`
         : p.img ? `<img src="${esc(p.img)}" alt="">`
-        : auto ? "" : `<div class="ph">${esc(p.t)}<small>Vídeo do projeto por adicionar</small></div>`;
+        : "";   /* no footage yet: plain black */
       /* peekLabel: text for every table, or { pageId: text } for some pages only */
       const pl = typeof p.peekLabel === "string" ? p.peekLabel : (p.peekLabel || {})[(tr.closest(".page") || {}).id];
       if (pl) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(pl)}</span>`);
