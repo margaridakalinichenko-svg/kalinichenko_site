@@ -256,7 +256,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
   .tbl td:nth-child(3) { overflow: visible; text-overflow: clip; }
   .credits-side { position: sticky; top: 110px; }
   .tbl table { min-width: 0; }
-  .tbl tbody tr { cursor: default; transition: opacity .25s; }
+  .tbl tbody tr { cursor: pointer; transition: opacity .25s; }
   .credits.peeking tbody tr { opacity: .35; }
   .credits.peeking tbody tr.on { opacity: 1; }
 }
@@ -411,13 +411,13 @@ const P = [
   { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
   { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel" },
   { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" } },
-  { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4" },
+  { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ" },
   { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan" },
   { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" } },
   { y: 2025, t: "Chulé", f: "Publicidade", r: ["prod", "real"], clip: "media/chule.mp4", img: "media/chule.jpg",
     youtube: "HF8i05qGSTA" },
   { y: 2025, t: "Victoria Leuca – Só", f: "Videoclipe", r: ["prod"], clip: "media/so.mp4", img: "media/so.jpg" },
-  { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro" },
+  { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro", youtube: "Bvn0W4VuJ1U" },
   { y: 2025, t: "Bye Bye Bacchus", f: "Curta-metragem", r: ["real", "mont"], clip: "media/bacchus.mp4", img: "media/bacchus.jpg", noMore: true,
     note: "Atualmente no circuito de festivais", trailer: "", youtube: "gkFoigKYY_o", youtubeLabel: "Ver trailer",
     laurel: { src: "media/louro-31ccp.png", alt: "Menção honrosa, Ensaio Nacional, 31.º Caminhos do Cinema Português, Coimbra 2025" } },
@@ -462,7 +462,7 @@ function card(p, k) {
 }
 function table(title, rows, keys) {
   if (!rows.length) return "";
-  const tr = rows.map((p, i) => `<tr data-i="${P.indexOf(p)}" tabindex="0"><td class="n">${String(i + 1).padStart(2, "0")}</td><td>${esc(p.t)}</td><td>${esc(p.r.filter(k => !keys || keys.includes(k)).map(k => label(p, k)).join(" & "))}</td><td>${esc(p.f || "—")}</td><td class="y">${p.y}</td></tr>`).join("");
+  const tr = rows.map((p, i) => `<tr data-i="${P.indexOf(p)}" data-k="${(p.r.find(k => !keys || keys.includes(k))) || ""}" tabindex="0" role="button" aria-label="Abrir ${esc(p.t)}"><td class="n">${String(i + 1).padStart(2, "0")}</td><td>${esc(p.t)}</td><td>${esc(p.r.filter(k => !keys || keys.includes(k)).map(k => label(p, k)).join(" & "))}</td><td>${esc(p.f || "—")}</td><td class="y">${p.y}</td></tr>`).join("");
   return `<div class="credits-side">${title ? `<h2>${esc(title)}</h2>` : ""}</div><div class="tbl"><table><colgroup><col class="c-n"><col><col class="c-r"><col class="c-d"><col class="c-y"></colgroup>
     <tbody>${tr}</tbody></table></div>`;
 }
@@ -809,8 +809,13 @@ window.fitAll = fitAll;
   function close() { if (box.hidden) return; if (history.state && history.state.kaliOverlay === "proj") history.back(); else shut(); }
   addEventListener("popstate", () => { if (!box.hidden) shut(); });
   document.addEventListener("click", e => {
-    const b = e.target.closest(".more"); if (!b) return;
+    /* "Ver mais", "Ver trailer" and a click on a row of the credits tables all open the project */
+    const b = e.target.closest(".more, .credits tbody tr[data-i]"); if (!b) return;
     open(P[+b.dataset.i], b.dataset.k);
+  });
+  document.addEventListener("keydown", e => {
+    const tr = e.target.closest && e.target.closest(".credits tbody tr[data-i]");
+    if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(P[+tr.dataset.i], tr.dataset.k); }
   });
   document.getElementById("proj-close").addEventListener("click", close);
   addEventListener("keydown", e => { if (e.key === "Escape" && !box.hidden) close(); });
