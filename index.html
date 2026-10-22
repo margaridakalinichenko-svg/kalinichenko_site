@@ -350,10 +350,10 @@ body.ff-locked { overflow: hidden; }
 .prose p { margin: 0 0 1.1em; }
 .prose .motto { margin-top: 2em; }
 /* Sobre: loose, slightly disordered photo collage (each photo sets --c column, --y drop, --m mobile column) */
-.scatter { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2vw; row-gap: 3vw; align-items: start; margin-top: clamp(80px, 10vw, 140px); }
-.scatter img { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; position: relative; will-change: transform; }
+.scatter { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2vw; row-gap: 0; align-items: start; margin-top: clamp(80px, 10vw, 140px); padding-bottom: 9vw; }
+.scatter img { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; position: relative; will-change: transform; margin-bottom: -9vw; }   /* negative bottom: rows ride over each other */
 .scatter img:nth-child(3n) { z-index: 2; } .scatter img:nth-child(3n+1) { z-index: 1; }
-@media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter img { grid-column: var(--m); margin-top: 0; } }
+@media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter img { grid-column: var(--m); margin-top: 0; margin-bottom: -6vw; } .scatter { padding-bottom: 6vw; } }
 footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--dim); font-size: 11px; }
 @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
 </style>
@@ -909,7 +909,7 @@ document.getElementById("copy").addEventListener("click", async e => {
   function tick() {
     raf = 0;
     if (box.offsetParent === null) return;              /* Sobre not on screen */
-    const mid = innerHeight / 2, k = innerWidth < 700 ? 0.4 : 0.75;
+    const mid = innerHeight / 2, k = innerWidth < 700 ? 0.5 : 1;
     for (const im of imgs) {
       const t = +im.dataset.t || 0, r = im.getBoundingClientRect();
       const d = r.top - t + r.height / 2 - mid;          /* distance from the middle of the screen, without the shift */
