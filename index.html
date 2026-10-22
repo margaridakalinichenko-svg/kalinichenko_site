@@ -587,7 +587,7 @@ function route() {
   if (!views.some(v => v.id === id)) id = "inicio";
   swb.setAttribute("aria-expanded", "false"); swm.hidden = true; document.body.classList.remove("choosing");
   views.forEach(v => v.hidden = v.id !== id);
-  if (choosing) requestAnimationFrame(() => setChoose(true));
+  if (choosing) setChoose(true);
   const home = id === "inicio";
   document.body.classList.toggle("is-home", home);
   if (home) { requestAnimationFrame(() => { if (typeof alignK === "function") alignK(); }); garden.start(); } else { garden.stop(); }
