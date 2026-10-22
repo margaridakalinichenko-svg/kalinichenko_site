@@ -211,7 +211,11 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj .media { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--card); }
 .proj .media.ig { aspect-ratio: auto; width: min(100%, 420px); height: min(78svh, 760px); margin-inline: auto; background: #fff; border-radius: 4px; overflow: hidden; }
 .proj .media.igs { aspect-ratio: auto; background: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.proj .media.igs iframe { position: static !important; width: 100%; height: min(78svh, 700px); border: 0; background: #fff; border-radius: 4px; }
+/* each reel cell shows only the account bar + the video (height set in JS), with the bar darkened */
+.proj .media.igs .igc { position: relative; overflow: hidden; background: #000; height: 600px; }
+.proj .media.igs .igc iframe { position: absolute !important; inset: 0 auto auto 0 !important; width: 100%; height: calc(100% + 600px) !important; border: 0; }
+.proj .media.igs .igc::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 55px; z-index: 2; pointer-events: none;
+  -webkit-backdrop-filter: invert(1) hue-rotate(180deg); backdrop-filter: invert(1) hue-rotate(180deg); }
 /* igWide: a landscape Instagram reel shown large, cropped to the account bar + the video (no white card below) */
 .proj .media.ig.igw { width: min(100%, calc((100svh - 300px) * 16 / 9)); height: auto; margin-inline: auto; background: #000; border-radius: 0; }
 /* dark Instagram bar: invert only the account strip on top (the video is untouched) */
@@ -946,9 +950,10 @@ window.fitAll = fitAll;
     media.classList.toggle("igw", !!p.igWide);
     media.style.height = "";
     if (p.igWide) { const fit = () => { if (media.classList.contains("igw")) media.style.height = Math.round(media.clientWidth * 9 / 16 + 56) + "px"; }; requestAnimationFrame(fit); window.__igFit = fit; }
+    if (p.instagrams) { const fit = () => media.querySelectorAll(".igc").forEach(c => c.style.height = Math.round(c.clientWidth * 1.25 + 54) + "px"); requestAnimationFrame(fit); window.__igFit = fit; }   /* 4:5 video under a 54px bar */
     media.classList.toggle("igs", !!p.instagrams);   /* several reels side by side */   /* vertical reel instead of a 16:9 frame */
     media.innerHTML = p.instagrams
-      ? p.instagrams.map(id => `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(id)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe>`).join("")
+      ? p.instagrams.map(id => `<div class="igc"><iframe src="https://www.instagram.com/reel/${encodeURIComponent(id)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe></div>`).join("")
       : p.instagram && !p.youtube
       ? `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(p.instagram)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe>`
       : p.youtube
