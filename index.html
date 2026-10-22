@@ -220,7 +220,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 .reel-top button { opacity: .7; } .reel-top button:hover { opacity: 1; }
 .reel-cap { position: absolute; z-index: 2; left: clamp(16px, 4.5vw, 64px); right: clamp(16px, 4.5vw, 64px); bottom: clamp(40px, 5vw, 64px);
   display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: nowrap; pointer-events: none; }
-.reel-cap h2, .slide-cap h2 { white-space: nowrap; }
+.reel-cap h2, .slide-cap h2, .proj h2 { white-space: nowrap; }
 .reel-cap-l { min-width: 0; flex: 1 1 0; overflow: hidden; }
 .reel-btns { flex: none; }
 .reel-cap h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(2.6rem, 8vw, 8rem); line-height: .82; margin: 0 0 14px; }
@@ -780,11 +780,11 @@ addEventListener("resize", alignK);
 function fitLine(el) {
   if (!el || !el.offsetParent) return;
   el.style.fontSize = "";
-  const box = el.parentElement.clientWidth || el.clientWidth;
+  const box = el.id === "proj-t" ? el.clientWidth : (el.parentElement.clientWidth || el.clientWidth);
   const w = el.scrollWidth;
   if (w > box && box > 0) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * box / w * 0.98) + "px";
 }
-const fitAll = () => document.querySelectorAll(".slide-cap h2, .reel-cap h2").forEach(fitLine);
+const fitAll = () => document.querySelectorAll(".slide-cap h2, .reel-cap h2, #proj-t").forEach(fitLine);
 addEventListener("resize", fitAll);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
 window.fitAll = fitAll;
@@ -794,6 +794,7 @@ window.fitAll = fitAll;
   const box = document.getElementById("proj"), media = document.getElementById("proj-media");
   function open(p, k) {
     document.getElementById("proj-t").textContent = p.t;
+    requestAnimationFrame(() => fitLine(document.getElementById("proj-t"))); setTimeout(() => fitLine(document.getElementById("proj-t")), 60);
     document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("")
       + (p.festival ? `<span class="fest">Atualmente no circuito de festivais</span>` : "");
     media.classList.toggle("ig", !!p.instagram && !p.youtube);   /* vertical reel instead of a 16:9 frame */
