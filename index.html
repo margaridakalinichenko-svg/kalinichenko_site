@@ -281,6 +281,8 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 /* full-screen moment from the project behind the list (desktop hover) */
 .peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
 .peek.on { opacity: 1; }
+/* hover label in the top-left corner (p.peekLabel) */
+.peek-label { position: absolute; z-index: 1; top: calc(var(--hh, 76px) + env(safe-area-inset-top, 0px) + 16px); left: clamp(16px, 4.5vw, 64px); letter-spacing: .08em; opacity: .85; }
 .peek video, .peek img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
 .peek .ph { position: absolute; inset: 0; display: grid; place-items: center; padding: 0 6vw;
   background: radial-gradient(80% 70% at 35% 45%, #2a2320 0%, #0e0c0b 65%, #000 100%);
@@ -428,16 +430,16 @@ const P = [
   { y: 2026, t: "Banco BPI x RiR", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagrams: ["DaPsGqCIeWY", "DZ5VzHytdf0", "DaS_cqPNSIO"] },
   { y: 2026, t: "CANSO “Airspace World 2026”", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" } },
   { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
-  { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel", clip: "media/ultimo-canto.mp4", img: "media/ultimo-canto.jpg", festival: true, noOpen: true },
-  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite-preview.mp4", img: "media/noite-preview.jpg", video: "media/noite.mp4", poster: "media/noite.jpg", sound: true, festival: true },
-  { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ" },
-  { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan", festival: true },
+  { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel", clip: "media/ultimo-canto.mp4", img: "media/ultimo-canto.jpg", festival: true, noOpen: true, peekLabel: "Atualmente em circuito de festivais" },
+  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite-preview.mp4", img: "media/noite-preview.jpg", video: "media/noite.mp4", poster: "media/noite.jpg", sound: true, festival: true, peekLabel: "Ver teaser →" },
+  { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ", peekLabel: "Ver mais →" },
+  { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan", festival: true, noOpen: true, peekLabel: "Atualmente em circuito de festivais" },
   { y: 2025, t: "CANSO “Airspace World 2025”", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" } },
   { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" }, youtube: "wpmgNHWvtc8", clip: "media/lote28.mp4", img: "media/lote28.jpg" },
   { y: 2025, t: "Chulé", f: "Publicidade", r: ["prod", "real"], clip: "media/chule.mp4", img: "media/chule.jpg",
     youtube: "HF8i05qGSTA" },
   { y: 2025, t: "Victoria Leuca – Só", f: "Videoclipe", r: ["prod"], clip: "media/so.mp4", img: "media/so.jpg", youtube: "cEUa3SJD_sw" },
-  { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro", youtube: "Bvn0W4VuJ1U", clip: "media/hora-chico.mp4", img: "media/hora-chico.jpg", festival: true },
+  { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro", youtube: "Bvn0W4VuJ1U", clip: "media/hora-chico.mp4", img: "media/hora-chico.jpg", festival: true, peekLabel: "Ver teaser →" },
   { y: 2025, t: "Bye Bye Bacchus", f: "Curta-metragem", r: ["real", "mont"], clip: "media/bacchus.mp4", img: "media/bacchus.jpg", noMore: true,
     note: "Atualmente no circuito de festivais", trailer: "", youtube: "gkFoigKYY_o", youtubeLabel: "Ver trailer",
     laurel: { src: "media/louro-31ccp.png", alt: "Menção honrosa, Ensaio Nacional, 31.º Caminhos do Cinema Português, Coimbra 2025" } },
@@ -694,6 +696,7 @@ addEventListener("resize", alignK);
       peek.innerHTML = p.clip ? `<video src="${esc(p.clip)}" muted loop playsinline autoplay></video>`
         : p.img ? `<img src="${esc(p.img)}" alt="">`
         : `<div class="ph">${esc(p.t)}<small>Vídeo do projeto por adicionar</small></div>`;
+      if (p.peekLabel) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(p.peekLabel)}</span>`);
       const v = peek.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     }
     peek.classList.add("on"); document.body.classList.add("peeking");
