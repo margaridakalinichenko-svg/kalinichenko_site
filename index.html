@@ -414,7 +414,7 @@ const ROLE = { prod: "Produção", real: "Realização", mont: "Montagem", arte:
 const P = [
   { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
   { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel", clip: "media/ultimo-canto.mp4", img: "media/ultimo-canto.jpg", festival: true },
-  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite.mp4", img: "media/noite.jpg", sound: true, festival: true },
+  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, clip: "media/noite-preview.mp4", img: "media/noite-preview.jpg", video: "media/noite.mp4", poster: "media/noite.jpg", sound: true, festival: true },
   { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ" },
   { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan", festival: true },
   { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" }, youtube: "wpmgNHWvtc8", clip: "media/lote28.mp4", img: "media/lote28.jpg" },
@@ -805,7 +805,7 @@ window.fitAll = fitAll;
       ? `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(p.instagram)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe>`
       : p.youtube
       ? `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.youtube)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`
-      : p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""}${p.sound ? "" : " muted loop"} playsinline autoplay controls></video>`
+      : p.video || p.clip ? `<video src="${esc(p.video || p.clip)}"${p.poster || p.img ? ` poster="${esc(p.poster || p.img)}"` : ""}${p.sound ? "" : " muted loop"} playsinline autoplay controls></video>`
       : p.img ? `<img src="${esc(p.img)}" alt="">` : "";
     if (p.film) media.insertAdjacentHTML("beforeend",
       `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
