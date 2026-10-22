@@ -408,7 +408,7 @@ body.ff-locked { overflow: hidden; }
 .scatter > :nth-child(3n) { z-index: 2; } .scatter > :nth-child(3n+1) { z-index: 1; }
 @media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter > * { grid-column: var(--m); margin-top: 0; margin-bottom: -6vw; } .scatter { padding-bottom: 6vw; } }
 /* layout editor (?editar) */
-body.editing .scatter { display: block; position: relative; padding: 0; }
+body.editing .scatter { display: block; position: relative; z-index: 1; padding: 0; }   /* own layer: photos stay under the menu */
 body.editing .scatter > * { position: absolute; margin: 0 !important; transform: none !important; touch-action: none; user-select: none; outline: 1px dashed rgba(255,255,255,.35); }
 body.editing .scatter > *:hover { outline: 1px solid #fff; }
 .ed-bar { position: fixed; z-index: 50; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
@@ -1071,7 +1071,7 @@ document.getElementById("copy").addEventListener("click", async e => {
     el.addEventListener("pointermove", e => {
       if (!drag || drag.el !== el) return;
       const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
-      if (drag.mode === "move") { el.style.left = drag.l + dx + "px"; el.style.top = Math.max(0, drag.t + dy) + "px"; }
+      if (drag.mode === "move") { el.style.left = drag.l + dx + "px"; el.style.top = (drag.t + dy) + "px";   /* negative = up beside the text */ }
       else el.style.width = Math.max(60, drag.w + dx) + "px";
       fitH();
     });
