@@ -55,6 +55,26 @@ header nav a:hover { opacity: .7; }
 header nav a[aria-current="page"] { opacity: 1; font-weight: 500; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .page:has(> h1.sr-only) { padding-top: clamp(8px, 2vw, 24px); }
+/* phone / tablet header: KALI + Sobre on the first line, the departments on the second */
+@media (max-width: 899px) {
+  header { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand extra" "depts depts"; row-gap: 14px; padding-block: 20px 14px; }
+  header .brand { grid-area: brand; } header .extra { grid-area: extra; } header .depts { grid-area: depts; gap: 8px 22px; }
+}
+/* phone / tablet tables: each row stacks (number · title · year, then role · format underneath), nothing hidden */
+@media (max-width: 899px) {
+  .credits .tbl, .credits .tbl table, .credits .tbl tbody { display: block; width: 100%; min-width: 0 !important; overflow: visible; }
+  .tbl colgroup { display: none; }
+  .tbl tbody tr { display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; grid-template-areas: "n t y" ". r f";
+    column-gap: 10px; row-gap: 4px; padding: 12px 0 11px; border-top: 1px solid var(--rule); cursor: pointer; }
+  .tbl tbody tr:last-child { border-bottom: 1px solid var(--rule); }
+  .tbl td { border: 0 !important; padding: 0 !important; }
+  .tbl td.n { grid-area: n; color: var(--dim); }
+  .tbl td:nth-child(2) { grid-area: t; }
+  .tbl td.y { grid-area: y; width: auto; justify-self: end; text-align: right; }
+  .tbl td:nth-child(3) { grid-area: r; color: var(--dim); font-size: .92em; }
+  .tbl td:nth-child(4) { grid-area: f; color: var(--dim); font-size: .92em; text-align: right; }
+  .tbl tbody tr.no-open { cursor: default; }
+}
 @media (min-width: 900px) {
   header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; }
   header .extra { justify-self: end; }
@@ -626,7 +646,7 @@ const swb = document.getElementById("seework"), swm = document.getElementById("s
 function setChoose(open) {
   swb.setAttribute("aria-expanded", String(open)); swm.hidden = !open;
   document.body.classList.toggle("choosing", open);
-  if (open) swm.querySelector("a").focus({ preventScroll: true }); else if (document.activeElement && swm.contains(document.activeElement)) swb.focus({ preventScroll: true });
+  if (open) swm.querySelector("a").focus({ preventScroll: true, focusVisible: false }); else if (document.activeElement && swm.contains(document.activeElement)) swb.focus({ preventScroll: true });
 }
 function closeChoose() { if (location.hash === "#ver") history.replaceState(null, "", "#inicio"); setChoose(false); }
 swb.addEventListener("click", () => { if (swb.getAttribute("aria-expanded") === "true") closeChoose(); else location.hash = "ver"; });
@@ -661,12 +681,15 @@ function route() {
   });
   const names = { producao: "Produção", montagem: "Montagem", realizacao: "Realização", forfun: "For fun", sobre: "Sobre" };
   document.title = home ? "Kalinichenko" : names[id] + " · Kalinichenko";
-  window.scrollTo(0, 0);
+  /* the page ids match the hash, so the browser also jumps to the section: undo that, every page opens at the top */
+  window.scrollTo(0, 0); requestAnimationFrame(() => window.scrollTo(0, 0)); setTimeout(() => window.scrollTo(0, 0), 60);
   if (typeof setHH === "function") requestAnimationFrame(setHH);
 }
 const setHH = () => document.documentElement.style.setProperty("--hh", document.querySelector("header").offsetHeight + "px");
 addEventListener("resize", setHH);
 addEventListener("hashchange", route);
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+addEventListener("load", () => { if (location.hash) window.scrollTo(0, 0); });
 route(); setHH(); requestAnimationFrame(setHH);
 
 /* frame the line under the name with the actual ink edges of K and O */
@@ -873,7 +896,7 @@ window.fitAll = fitAll;
     const v = media.querySelector("video"); if (v) { v.muted = !p.sound; const r = v.play(); if (r && r.catch) r.catch(() => { v.muted = true; v.play().catch(() => {}); }); }
     if (box.hidden) history.pushState({ kaliOverlay: "proj" }, "");   /* back arrow closes the project instead of leaving the page */
     box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
-    document.getElementById("proj-close").focus({ preventScroll: true });
+    document.getElementById("proj-close").focus({ preventScroll: true, focusVisible: false });
   }
   function shut() { box.hidden = true; media.innerHTML = ""; document.body.classList.remove("proj-on"); }
   function close() { if (box.hidden) return; if (history.state && history.state.kaliOverlay === "proj") history.back(); else shut(); }
