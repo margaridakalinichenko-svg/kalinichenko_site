@@ -307,6 +307,19 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 /* Realização: the footer sits at the bottom of the same screen as the list */
 body:has(#realizacao:not([hidden])) .layer > footer { margin-top: 0; padding-bottom: 24px; scroll-snap-align: end; }
 html body #realizacao .slides + .credits { min-height: calc(100svh - var(--hh, 76px) - env(safe-area-inset-top, 0px) - 46px); }
+/* Produção: the whole page fits one screen, list in the middle, footer at the bottom, no scrolling */
+body:has(#producao:not([hidden])) { padding-bottom: 0; }
+body:has(#producao:not([hidden])) .layer { min-height: 100svh; display: flex; flex-direction: column; }
+body:has(#producao:not([hidden])) .layer > main { flex: 1; display: flex; flex-direction: column; }
+body:has(#producao:not([hidden])) #producao { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 0; }
+html body #producao .credits { min-height: 0; margin-block: 24px; }
+body:has(#producao:not([hidden])) .layer > footer { margin-top: 0; padding-bottom: 24px; }
+@media (max-width: 899px) and (max-height: 700px) {   /* small phones: tighter rows so it still fits */
+  html body #producao .credits { margin-block: 12px; }
+  #producao .tbl tbody tr { padding: 5px 0 4px; row-gap: 1px; }
+  body:has(#producao:not([hidden])) .layer > header { padding-block: 14px 8px; row-gap: 10px; }
+  body:has(#producao:not([hidden])) .layer > footer { padding-bottom: 14px; }
+}
 /* full-screen moment from the project behind the list (desktop hover) */
 .peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
 .peek.on { opacity: 1; }
