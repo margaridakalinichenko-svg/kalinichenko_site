@@ -175,7 +175,9 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 /* project page opened from "Ver mais" */
 .proj { position: fixed; inset: 0; z-index: 20; background: var(--bg); overflow-y: auto;
   padding: calc(env(safe-area-inset-top, 0px) + 28px) clamp(16px, 4.5vw, 64px) 64px; animation: chooseIn .35s ease both; }
-.proj-bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.proj:not([hidden]) { display: flex; flex-direction: column; padding-bottom: 28px; }
+.proj .proj-foot { margin-top: auto; padding-top: 64px; }
+.proj-bar { display: flex; justify-content: flex-end; align-items: baseline; gap: 16px; }
 .proj-bar button { color: var(--dim); } .proj-bar button:hover { color: var(--fg); }
 .proj .meta .fest { margin-left: auto; text-align: right; color: var(--fg); opacity: .6; letter-spacing: .08em; }
 .proj h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 9vw, 8rem); line-height: .85; margin: 24px 0 12px; }
@@ -352,11 +354,12 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
 
 <div class="peek" id="peek" aria-hidden="true"></div>
 <div class="proj" id="proj" role="dialog" aria-modal="true" aria-labelledby="proj-t" hidden>
-  <div class="proj-bar"><span class="brand">KALI</span><button type="button" id="proj-close">Fechar</button></div>
+  <div class="proj-bar"><button type="button" id="proj-close">Fechar</button></div>
   <h2 id="proj-t"></h2>
   <div class="meta" id="proj-meta"></div>
   <div class="media" id="proj-media"></div>
   <p class="note" id="proj-note">Sinopse, ficha técnica e link para o filme por adicionar</p>
+  <footer class="proj-foot"><span>© 2026 Margarida Kalinichenko</span><span>Lisboa</span></footer>
 </div>
 <div class="layer">
   <header>
