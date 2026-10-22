@@ -572,18 +572,22 @@ function setChoose(open) {
   document.body.classList.toggle("choosing", open);
   if (open) swm.querySelector("a").focus({ preventScroll: true }); else if (document.activeElement && swm.contains(document.activeElement)) swb.focus({ preventScroll: true });
 }
-swb.addEventListener("click", () => setChoose(swb.getAttribute("aria-expanded") !== "true"));
-document.getElementById("seework-close").addEventListener("click", () => setChoose(false));
-swm.addEventListener("click", e => { if (e.target === swm) setChoose(false); });
-addEventListener("keydown", e => { if (e.key === "Escape" && !swm.hidden) setChoose(false); });
+function closeChoose() { if (location.hash === "#ver") history.replaceState(null, "", "#inicio"); setChoose(false); }
+swb.addEventListener("click", () => { if (swb.getAttribute("aria-expanded") === "true") closeChoose(); else location.hash = "ver"; });
+document.getElementById("seework-close").addEventListener("click", closeChoose);
+swm.addEventListener("click", e => { if (e.target === swm) closeChoose(); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !swm.hidden) closeChoose(); });
 
 function route() {
   let id = (location.hash || "").replace("#", "");
+  const choosing = id === "ver";                     /* home with the three departments open */
+  if (choosing) id = "inicio";
   if (id === "trabalho") id = "producao";
   if (id === "oficina") id = "forfun";
   if (!views.some(v => v.id === id)) id = "inicio";
   swb.setAttribute("aria-expanded", "false"); swm.hidden = true; document.body.classList.remove("choosing");
   views.forEach(v => v.hidden = v.id !== id);
+  if (choosing) requestAnimationFrame(() => setChoose(true));
   const home = id === "inicio";
   document.body.classList.toggle("is-home", home);
   if (home) { requestAnimationFrame(() => { if (typeof alignK === "function") alignK(); }); garden.start(); } else { garden.stop(); }
