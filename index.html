@@ -349,6 +349,10 @@ body.ff-locked { overflow: hidden; }
 .prose { max-width: 62ch; text-transform: none; letter-spacing: 0; font-size: clamp(15px, 1.25vw, 17px); line-height: 1.6; }
 .prose p { margin: 0 0 1.1em; }
 .prose .motto { margin-top: 2em; font-size: 1.15em; }
+/* Sobre: loose, slightly disordered photo collage (each photo sets --c column, --y drop, --m mobile column) */
+.scatter { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2vw; row-gap: 3vw; align-items: start; margin-top: clamp(80px, 10vw, 140px); }
+.scatter img { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; }
+@media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter img { grid-column: var(--m); margin-top: 0; } }
 footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--dim); font-size: 11px; }
 @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
 </style>
@@ -428,6 +432,25 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
         <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/margarida.kalinichenko/" target="_blank" rel="noopener">@margarida.kalinichenko</a></dd></div>
         <div><dt>CV</dt><dd style="color:var(--dim)">PDF por adicionar</dd></div>
       </dl>
+      <div class="scatter" aria-label="Fotografias de rodagem">
+        <img src="media/sobre/01.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:0vw">
+        <img src="media/sobre/02.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 3;--m:6 / span 7;--y:6vw">
+        <img src="media/sobre/03.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 5;--m:1 / span 11;--y:0vw">
+        <img src="media/sobre/04.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:6 / span 7;--y:4vw">
+        <img src="media/sobre/05.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 5;--m:1 / span 11;--y:2vw">
+        <img src="media/sobre/06.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:2 / span 11;--y:10vw">
+        <img src="media/sobre/07.jpg" alt="" loading="lazy" decoding="async" style="--c:3 / span 5;--m:1 / span 11;--y:0vw">
+        <img src="media/sobre/08.jpg" alt="" loading="lazy" decoding="async" style="--c:9 / span 3;--m:6 / span 7;--y:2vw">
+        <img src="media/sobre/09.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:1 / span 7;--y:4vw">
+        <img src="media/sobre/10.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 3;--m:6 / span 7;--y:10vw">
+        <img src="media/sobre/11.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:1 / span 7;--y:0vw">
+        <img src="media/sobre/12.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 5;--m:2 / span 11;--y:0vw">
+        <img src="media/sobre/13.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:8vw">
+        <img src="media/sobre/14.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 5;--m:2 / span 11;--y:0vw">
+        <img src="media/sobre/15.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:1 / span 7;--y:3vw">
+        <img src="media/sobre/16.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 6;--m:2 / span 11;--y:6vw">
+        <img src="media/sobre/17.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 3;--m:1 / span 7;--y:0vw">
+      </div>
     </section>
   </main>
 
