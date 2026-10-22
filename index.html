@@ -266,8 +266,14 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 }
 @media (min-width: 1200px) { .credits { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) !important; } }
 /* tableNarrow: no label, a slightly narrower list on the right */
-@media (min-width: 900px) { .credits.narrow { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) !important; } }
-@media (min-width: 1200px) { .credits.narrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; } }
+@media (min-width: 900px) {
+  .credits.narrow { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) !important; }
+  .credits.narrow .tbl table { table-layout: auto; }
+  .credits.narrow .tbl col { width: auto !important; }
+  .credits.narrow .tbl td { font-size: 12.5px; overflow: visible; text-overflow: clip; padding-right: 16px; }
+  .credits.narrow .tbl td.y { padding-right: 0; }
+}
+@media (min-width: 1200px) { .credits.narrow { grid-template-columns: minmax(0, 9fr) minmax(0, 11fr) !important; } }
 /* full-screen moment from the project behind the list (desktop hover) */
 .peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
 .peek.on { opacity: 1; }
