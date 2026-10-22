@@ -404,9 +404,16 @@ body.ff-locked { overflow: hidden; }
 .prose .motto { margin-top: 2em; }
 /* Sobre: loose, slightly disordered photo collage (each photo sets --c column, --y drop, --m mobile column) */
 .scatter { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2vw; row-gap: 0; align-items: start; margin-top: clamp(80px, 10vw, 140px); padding-bottom: 9vw; }
-.scatter img { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; position: relative; will-change: transform; margin-bottom: -9vw; }   /* negative bottom: rows ride over each other */
-.scatter img:nth-child(3n) { z-index: 2; } .scatter img:nth-child(3n+1) { z-index: 1; }
-@media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter img { grid-column: var(--m); margin-top: 0; margin-bottom: -6vw; } .scatter { padding-bottom: 6vw; } }
+.scatter > * { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; position: relative; will-change: transform; margin-bottom: -9vw; }   /* negative bottom: rows ride over each other */
+.scatter > :nth-child(3n) { z-index: 2; } .scatter > :nth-child(3n+1) { z-index: 1; }
+@media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter > * { grid-column: var(--m); margin-top: 0; margin-bottom: -6vw; } .scatter { padding-bottom: 6vw; } }
+/* layout editor (?editar) */
+body.editing .scatter { display: block; position: relative; padding: 0; }
+body.editing .scatter > * { position: absolute; margin: 0 !important; transform: none !important; touch-action: none; user-select: none; outline: 1px dashed rgba(255,255,255,.35); }
+body.editing .scatter > *:hover { outline: 1px solid #fff; }
+.ed-bar { position: fixed; z-index: 50; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+  background: rgba(20,20,20,.92); border: 1px solid #333; padding: 10px 14px; border-radius: 6px; max-width: calc(100vw - 32px); }
+.ed-bar span { color: var(--dim); } .ed-bar button { border: 1px solid #555; padding: 6px 10px; border-radius: 4px; } .ed-bar button:hover { border-color: #fff; }
 footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--dim); font-size: 11px; }
 @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
 </style>
@@ -504,6 +511,9 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
         <img src="media/sobre/14.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:0vw" data-speed="0.24">
         <img src="media/sobre/15.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 4;--m:1 / span 7;--y:0vw" data-speed="0.1">
         <img src="media/sobre/18.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:1 / span 11;--y:6vw" data-speed="-0.04">
+        <img src="media/sobre/20.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:2vw" data-speed="0.16">
+        <img src="media/sobre/19.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:8vw" data-speed="-0.08">
+        <video src="media/sobre/21.mp4" poster="media/sobre/21.jpg" muted loop playsinline autoplay preload="metadata" aria-hidden="true" style="--c:4 / span 3;--m:6 / span 7;--y:0vw" data-speed="0.2"></video>
       </div>
     </section>
   </main>
@@ -1002,7 +1012,8 @@ document.getElementById("copy").addEventListener("click", async e => {
 (() => {
   const box = document.querySelector(".scatter"); if (!box) return;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const imgs = [...box.querySelectorAll("img")];
+  if (new URLSearchParams(location.search).has("editar")) return;   /* layout editor: no movement */
+  const imgs = [...box.children];
   let raf = 0;
   function tick() {
     raf = 0;
@@ -1018,7 +1029,64 @@ document.getElementById("copy").addEventListener("click", async e => {
   }
   const go = () => { if (!raf) raf = requestAnimationFrame(tick); };
   addEventListener("scroll", go, { passive: true }); addEventListener("resize", go); addEventListener("hashchange", () => setTimeout(go, 50));
-  imgs.forEach(im => im.addEventListener("load", go)); go();
+  imgs.forEach(im => im.addEventListener(im.tagName === "VIDEO" ? "loadedmetadata" : "load", go)); go();
+})();
+
+/* ---- Sobre layout editor (only with ?editar in the address): drag photos to move them,
+   drag the bottom-right corner to resize, click to bring to front; "Copiar disposição" copies the result ---- */
+(() => {
+  if (!new URLSearchParams(location.search).has("editar")) return;
+  const box = document.querySelector(".scatter"); if (!box) return;
+  const KEY = "kali-sobre-layout";
+  const items = [...box.children];
+  items.forEach(el => { el.loading = "eager"; if (el.tagName === "IMG") el.removeAttribute("loading"); });
+  const bar = document.createElement("div"); bar.className = "ed-bar";
+  bar.innerHTML = `<span>Modo de edição · arrasta para mover · canto de baixo à direita para mudar o tamanho · clica para pôr à frente</span>
+    <button type="button" data-a="copy">Copiar disposição</button><button type="button" data-a="reset">Repor</button>`;
+  document.body.appendChild(bar);
+  let z = 10;
+  const W = () => box.clientWidth;
+  function fitH() { let m = 0; items.forEach(el => m = Math.max(m, el.offsetTop + el.offsetHeight)); box.style.height = (m + 40) + "px"; }
+  function place(el, d) { el.style.left = d.x * W() / 100 + "px"; el.style.top = d.y * W() / 100 + "px"; el.style.width = d.w * W() / 100 + "px"; el.style.zIndex = d.z || 1; }
+  function data(el) { return { src: el.getAttribute("src"), x: +(el.offsetLeft / W() * 100).toFixed(2), y: +(el.offsetTop / W() * 100).toFixed(2), w: +(el.offsetWidth / W() * 100).toFixed(2), z: +el.style.zIndex || 1 }; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(items.map(data))); } catch (e) {} }
+  function start() {
+    const br = box.getBoundingClientRect();
+    const first = items.map(el => { const r = el.getBoundingClientRect(); return { x: (r.left - br.left) / W() * 100, y: (r.top - br.top) / W() * 100, w: r.width / W() * 100, z: 1 }; });
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+    document.body.classList.add("editing");
+    items.forEach((el, i) => { const d = (saved && saved.find(s => s.src === el.getAttribute("src"))) || first[i]; place(el, d); z = Math.max(z, d.z || 1); });
+    fitH();
+  }
+  let drag = null;
+  items.forEach(el => {
+    el.draggable = false;
+    el.addEventListener("pointermove", e => { if (drag) return; const r = el.getBoundingClientRect(); el.style.cursor = (r.right - e.clientX < 22 && r.bottom - e.clientY < 22) ? "nwse-resize" : "move"; });
+    el.addEventListener("pointerdown", e => {
+      e.preventDefault(); const r = el.getBoundingClientRect();
+      el.style.zIndex = ++z; el.setPointerCapture(e.pointerId);
+      drag = { el, mode: (r.right - e.clientX < 22 && r.bottom - e.clientY < 22) ? "size" : "move", x0: e.clientX, y0: e.clientY, l: el.offsetLeft, t: el.offsetTop, w: el.offsetWidth };
+    });
+    el.addEventListener("pointermove", e => {
+      if (!drag || drag.el !== el) return;
+      const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+      if (drag.mode === "move") { el.style.left = drag.l + dx + "px"; el.style.top = Math.max(0, drag.t + dy) + "px"; }
+      else el.style.width = Math.max(60, drag.w + dx) + "px";
+      fitH();
+    });
+    el.addEventListener("pointerup", () => { drag = null; save(); });
+  });
+  bar.addEventListener("click", async e => {
+    const a = e.target.dataset.a; if (!a) return;
+    if (a === "reset") { try { localStorage.removeItem(KEY); } catch (er) {} location.reload(); return; }
+    const txt = JSON.stringify({ width: W(), items: items.map(data) });
+    try { await navigator.clipboard.writeText(txt); e.target.textContent = "Copiado! Cola na conversa"; }
+    catch (er) { prompt("Copia isto e cola na conversa:", txt); }
+    setTimeout(() => e.target.textContent = "Copiar disposição", 2500);
+  });
+  const go = () => { if (location.hash === "#sobre") setTimeout(start, 600); };
+  addEventListener("load", go); addEventListener("hashchange", go);
+  addEventListener("resize", () => { if (!document.body.classList.contains("editing")) return; const d = items.map(data); });
 })();
 </script>
 </body>
