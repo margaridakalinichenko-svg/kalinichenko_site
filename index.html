@@ -407,6 +407,13 @@ body.ff-locked { overflow: hidden; }
 .scatter > * { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; position: relative; will-change: transform; margin-bottom: -9vw; }   /* negative bottom: rows ride over each other */
 .scatter > :nth-child(3n) { z-index: 2; } .scatter > :nth-child(3n+1) { z-index: 1; }
 @media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter > * { grid-column: var(--m); margin-top: 0; margin-bottom: -6vw; } .scatter { padding-bottom: 6vw; } }
+/* desktop: Margarida's own arrangement (x, y, width in % of the collage width; y can be negative = beside the text) */
+@media (min-width: 900px) {
+  .scatter { display: block; position: relative; container-type: inline-size; padding-bottom: 0; }
+  #sobre .prose { max-width: min(62ch, 46%); }
+  .scatter::before { content: ""; display: block; padding-top: 81.58%; }
+  .scatter > *:nth-child(n) { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--yy) * 1cqw); width: calc(var(--w) * 1%); margin: 0 !important; z-index: var(--z, 1); }
+}
 /* layout editor (?editar) */
 body.editing .scatter { display: block; position: relative; z-index: 1; padding: 0; }   /* own layer: photos stay under the menu */
 body.editing .scatter > * { position: absolute; margin: 0 !important; transform: none !important; touch-action: none; user-select: none; outline: 1px dashed rgba(255,255,255,.35); }
@@ -493,28 +500,28 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
         <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/margarida.kalinichenko/" target="_blank" rel="noopener">@margarida.kalinichenko</a></dd></div>
       </dl>
       <div class="scatter" aria-label="Fotografias de rodagem">
-        <img src="media/sobre/01.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:0vw" data-speed="0.12">
-        <img src="media/sobre/12.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:1 / span 11;--y:6vw" data-speed="-0.08">
-        <img src="media/sobre/17.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 4;--m:6 / span 7;--y:4vw" data-speed="0.22">
-        <img src="media/sobre/16.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:0vw" data-speed="0.04">
-        <img src="media/sobre/02.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 3;--m:1 / span 7;--y:0vw" data-speed="-0.12">
-        <img src="media/sobre/03.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:8vw" data-speed="0.18">
-        <img src="media/sobre/04.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:6 / span 7;--y:8vw" data-speed="0.0">
-        <img src="media/sobre/06.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 6;--m:2 / span 11;--y:0vw" data-speed="0.26">
-        <img src="media/sobre/08.jpg" alt="" loading="lazy" decoding="async" style="--c:3 / span 4;--m:1 / span 7;--y:0vw" data-speed="-0.06">
-        <img src="media/sobre/05.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:5vw" data-speed="0.14">
-        <img src="media/sobre/09.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:6 / span 7;--y:2vw" data-speed="0.3">
-        <img src="media/sobre/13.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 5;--m:2 / span 11;--y:10vw" data-speed="-0.1">
-        <img src="media/sobre/10.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 3;--m:1 / span 7;--y:0vw" data-speed="0.2">
-        <img src="media/sobre/07.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:4vw" data-speed="0.06">
-        <img src="media/sobre/11.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:6 / span 7;--y:6vw" data-speed="-0.14">
-        <img src="media/sobre/14.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:0vw" data-speed="0.24">
-        <img src="media/sobre/15.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 4;--m:1 / span 7;--y:0vw" data-speed="0.1">
-        <img src="media/sobre/18.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:1 / span 11;--y:6vw" data-speed="-0.04">
-        <img src="media/sobre/20.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:2vw" data-speed="0.16">
-        <img src="media/sobre/19.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:8vw" data-speed="-0.08">
-        <img src="media/sobre/22.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:2 / span 11;--y:6vw" data-speed="-0.12">
-        <video src="media/sobre/21.mp4" poster="media/sobre/21.jpg" muted loop playsinline autoplay preload="metadata" aria-hidden="true" style="--c:4 / span 3;--m:6 / span 7;--y:0vw" data-speed="0.2"></video>
+        <img src="media/sobre/01.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:0vw;--x:55.41;--yy:-65.5;--w:26.9;--z:101" data-speed="0.12">
+        <img src="media/sobre/12.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:1 / span 11;--y:6vw;--x:62.13;--yy:-0.37;--w:25.37;--z:258" data-speed="-0.08">
+        <img src="media/sobre/17.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 4;--m:6 / span 7;--y:4vw;--x:77.63;--yy:-35.38;--w:22.81;--z:260" data-speed="0.22">
+        <img src="media/sobre/16.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:0vw;--x:42.91;--yy:-20.03;--w:34.43;--z:217" data-speed="0.04">
+        <img src="media/sobre/02.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 3;--m:1 / span 7;--y:0vw;--x:1.24;--yy:-3.65;--w:21.56;--z:107" data-speed="-0.12">
+        <img src="media/sobre/03.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:8vw;--x:75.95;--yy:55.63;--w:24.78;--z:353" data-speed="0.18">
+        <img src="media/sobre/04.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:6 / span 7;--y:8vw;--x:57.46;--yy:63.3;--w:12.21;--z:352" data-speed="0.0">
+        <img src="media/sobre/06.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 6;--m:2 / span 11;--y:0vw;--x:1.17;--yy:41.23;--w:27.56;--z:324" data-speed="0.26">
+        <img src="media/sobre/08.jpg" alt="" loading="lazy" decoding="async" style="--c:3 / span 4;--m:1 / span 7;--y:0vw;--x:49.34;--yy:0.44;--w:14.69;--z:318" data-speed="-0.06">
+        <img src="media/sobre/05.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:5vw;--x:41.3;--yy:54.46;--w:19.15;--z:351" data-speed="0.14">
+        <img src="media/sobre/09.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:6 / span 7;--y:2vw;--x:36.55;--yy:62.21;--w:12.21;--z:348" data-speed="0.3">
+        <img src="media/sobre/13.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 5;--m:2 / span 11;--y:10vw;--x:21.86;--yy:-5.12;--w:25.73;--z:305" data-speed="-0.1">
+        <img src="media/sobre/10.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 3;--m:1 / span 7;--y:0vw;--x:25.95;--yy:47.3;--w:12.21;--z:325" data-speed="0.2">
+        <img src="media/sobre/07.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:4vw;--x:76.97;--yy:38.01;--w:23.76;--z:283" data-speed="0.06">
+        <img src="media/sobre/11.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:6 / span 7;--y:6vw;--x:58.26;--yy:19.23;--w:12.21;--z:308" data-speed="-0.14">
+        <img src="media/sobre/14.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:0vw;--x:69.01;--yy:20.83;--w:23.61;--z:266" data-speed="0.24">
+        <img src="media/sobre/15.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 4;--m:1 / span 7;--y:0vw;--x:85.09;--yy:9.28;--w:15.35;--z:267" data-speed="0.1">
+        <img src="media/sobre/18.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:1 / span 11;--y:6vw;--x:6.87;--yy:61.04;--w:25.73;--z:331" data-speed="-0.04">
+        <img src="media/sobre/20.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:2vw;--x:21.05;--yy:21.42;--w:12.21;--z:316" data-speed="0.16">
+        <img src="media/sobre/19.jpg" alt="" loading="lazy" decoding="async" style="--c:6 / span 6;--m:2 / span 11;--y:8vw;--x:29.9;--yy:11.18;--w:24.2;--z:317" data-speed="-0.08">
+        <img src="media/sobre/22.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:2 / span 11;--y:6vw;--x:34.14;--yy:32.02;--w:24.78;--z:342" data-speed="-0.12">
+        <video src="media/sobre/21.mp4" poster="media/sobre/21.jpg" muted loop playsinline autoplay preload="metadata" aria-hidden="true" style="--c:4 / span 3;--m:6 / span 7;--y:0vw;--x:63.96;--yy:42.84;--w:12.21;--z:354" data-speed="0.2"></video>
       </div>
     </section>
   </main>
@@ -1019,7 +1026,7 @@ document.getElementById("copy").addEventListener("click", async e => {
   function tick() {
     raf = 0;
     if (box.offsetParent === null) return;              /* Sobre not on screen */
-    const mid = innerHeight / 2, k = innerWidth < 700 ? 0.5 : 1;
+    const mid = innerHeight / 2, k = innerWidth < 700 ? 0.5 : 0.45;   /* desktop: gentle, so the arrangement keeps its shape */
     for (const im of imgs) {
       const t = +im.dataset.t || 0, r = im.getBoundingClientRect();
       const d = r.top - t + r.height / 2 - mid;          /* distance from the middle of the screen, without the shift */
@@ -1088,6 +1095,23 @@ document.getElementById("copy").addEventListener("click", async e => {
   const go = () => { if (location.hash === "#sobre") setTimeout(start, 600); };
   addEventListener("load", go); addEventListener("hashchange", go);
   addEventListener("resize", () => { if (!document.body.classList.contains("editing")) return; const d = items.map(data); });
+})();
+
+/* Sobre (desktop): the arrangement scales with the screen width; on very wide screens the top photos
+   would climb above the title, so the whole collage is nudged down just enough to start level with it */
+(() => {
+  const box = document.querySelector(".scatter"), head = document.getElementById("h-sobre"); if (!box || !head) return;
+  const wide = matchMedia("(min-width: 900px)");
+  function anchor() {
+    box.style.marginTop = "";
+    if (!wide.matches || box.offsetParent === null) return;
+    let min = Infinity; [...box.children].forEach(el => min = Math.min(min, el.offsetTop));
+    const top = box.getBoundingClientRect().top + scrollY + min, limit = head.getBoundingClientRect().top + scrollY;
+    if (top < limit) box.style.marginTop = (parseFloat(getComputedStyle(box).marginTop) + limit - top) + "px";
+  }
+  addEventListener("resize", anchor); addEventListener("load", anchor); addEventListener("hashchange", () => setTimeout(anchor, 80));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(anchor);
+  setTimeout(anchor, 50);
 })();
 </script>
 </body>
