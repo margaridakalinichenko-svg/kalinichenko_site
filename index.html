@@ -199,6 +199,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
   padding-block: clamp(32px, 6vh, 72px); scroll-snap-align: start; scroll-margin-top: var(--hh, 76px); align-content: start; }
 .slide { scroll-snap-align: start; }
 
+.soon { min-height: 100svh; display: grid; place-items: center; font-family: var(--cond); font-weight: 600; font-size: clamp(2.4rem, 7vw, 6rem); opacity: .35; letter-spacing: .02em; }
 /* Montagem showreel: one full-screen player */
 .page:has(.reel) { padding-top: 0; }
 .reel { position: relative; margin-inline: calc(-1 * clamp(16px, 4.5vw, 64px));
@@ -433,7 +434,7 @@ const P = [
 ];
 const PAGES = {
   producao:   { title: "Produção",   main: "prod", tableOnly: true, crewTitle: "" },
-  montagem:   { title: "Montagem",   main: "mont", reel: true },
+  montagem:   { title: "Montagem",   main: "mont", reel: true, soon: true },   /* soon: hide the showreel, show "Em breve" */
   realizacao: { title: "Realização", main: "real", full: true, crew: ["ar", "anot"], crewTitle: "Assistência de realização & Anotação" }
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -477,8 +478,8 @@ for (const [id, cfg] of Object.entries(PAGES)) {
   const n = main.length + crew.length;
   document.getElementById(id).innerHTML = `
     <h1 class="sr-only" id="h-${cfg.main}">${esc(cfg.title)}</h1>
-    ${cfg.reel ? reelMarkup() : !main.length ? "" : cfg.full ? `<div class="slides">${main.map(p => slide(p, cfg.main)).join("")}</div>` : `<div class="cards">${main.map(p => card(p, cfg.main)).join("")}</div>`}
-    ${crew.length ? `<div class="credits">${table(cfg.crewTitle, crew, keys)}</div>` : ""}`;
+    ${cfg.soon ? `<div class="soon">Em breve</div>` : cfg.reel ? reelMarkup() : !main.length ? "" : cfg.full ? `<div class="slides">${main.map(p => slide(p, cfg.main)).join("")}</div>` : `<div class="cards">${main.map(p => card(p, cfg.main)).join("")}</div>`}
+    ${crew.length && !cfg.soon ? `<div class="credits">${table(cfg.crewTitle, crew, keys)}</div>` : ""}`;
 }
 
 /* ---- Montagem: one interactive showreel made of every edited project ----
