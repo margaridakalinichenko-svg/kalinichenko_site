@@ -352,7 +352,7 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
       <a href="#realizacao">Realização</a>
     </nav>
     <nav class="extra" aria-label="Mais">
-      <a href="#forfun">For fun</a>
+      <!-- For fun hidden for now: restore this link and remove HIDE_FORFUN below -->
       <a href="#sobre">Sobre</a>
     </nav>
   </header>
@@ -588,6 +588,7 @@ function route() {
   if (choosing) id = "inicio";
   if (id === "trabalho") id = "producao";
   if (id === "oficina") id = "forfun";
+  if (id === "forfun") id = "inicio";               /* HIDE_FORFUN: page hidden for now */
   if (!views.some(v => v.id === id)) id = "inicio";
   swb.setAttribute("aria-expanded", "false"); swm.hidden = true; document.body.classList.remove("choosing");
   views.forEach(v => v.hidden = v.id !== id);
