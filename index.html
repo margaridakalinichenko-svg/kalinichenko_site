@@ -804,7 +804,7 @@ window.fitAll = fitAll;
     if (p.film) media.insertAdjacentHTML("beforeend",
       `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
     document.getElementById("proj-note").hidden = !!(p.film || p.youtube || p.instagram || p.sound);
-    const v = media.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
+    const v = media.querySelector("video"); if (v) { v.muted = !p.sound; const r = v.play(); if (r && r.catch) r.catch(() => { v.muted = true; v.play().catch(() => {}); }); }
     if (box.hidden) history.pushState({ kaliOverlay: "proj" }, "");   /* back arrow closes the project instead of leaving the page */
     box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
     document.getElementById("proj-close").focus({ preventScroll: true });
