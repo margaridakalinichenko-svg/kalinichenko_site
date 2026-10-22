@@ -265,12 +265,9 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
   .credits.peeking tbody tr.on { opacity: 1; }
 }
 @media (min-width: 1200px) { .credits { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) !important; } }
-/* tableLeft: no label, the list sits on the left instead of the right */
-@media (min-width: 900px) {
-  .credits.left .credits-side { display: none; }
-  .credits.left { grid-template-columns: minmax(0, 3fr) minmax(0, 1fr) !important; }
-}
-@media (min-width: 1200px) { .credits.left { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) !important; } }
+/* tableNarrow: no label, a slightly narrower list on the right */
+@media (min-width: 900px) { .credits.narrow { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) !important; } }
+@media (min-width: 1200px) { .credits.narrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; } }
 /* full-screen moment from the project behind the list (desktop hover) */
 .peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
 .peek.on { opacity: 1; }
@@ -442,7 +439,7 @@ const P = [
 const PAGES = {
   producao:   { title: "Produção",   main: "prod", tableOnly: true, crewTitle: "" },
   montagem:   { title: "Montagem",   main: "mont", reel: true, soon: true },   /* soon: hide the showreel, show "Em breve" */
-  realizacao: { title: "Realização", main: "real", full: true, crew: ["ar", "anot"], crewTitle: "", tableLeft: true }
+  realizacao: { title: "Realização", main: "real", full: true, crew: ["ar", "anot"], crewTitle: "", tableNarrow: true }
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const has = k => p => p.r.includes(k);
@@ -486,7 +483,7 @@ for (const [id, cfg] of Object.entries(PAGES)) {
   document.getElementById(id).innerHTML = `
     <h1 class="sr-only" id="h-${cfg.main}">${esc(cfg.title)}</h1>
     ${cfg.soon ? `<div class="soon-space"></div><div class="soon">Em breve</div>` : cfg.reel ? reelMarkup() : !main.length ? "" : cfg.full ? `<div class="slides">${main.map(p => slide(p, cfg.main)).join("")}</div>` : `<div class="cards">${main.map(p => card(p, cfg.main)).join("")}</div>`}
-    ${crew.length && !cfg.soon ? `<div class="credits${cfg.tableLeft ? " left" : ""}">${table(cfg.crewTitle, crew, keys)}</div>` : ""}`;
+    ${crew.length && !cfg.soon ? `<div class="credits${cfg.tableNarrow ? " narrow" : ""}">${table(cfg.crewTitle, crew, keys)}</div>` : ""}`;
 }
 
 /* ---- Montagem: one interactive showreel made of every edited project ----
