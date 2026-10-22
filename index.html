@@ -950,7 +950,7 @@ window.fitAll = fitAll;
     media.classList.toggle("igw", !!p.igWide);
     media.style.height = "";
     if (p.igWide) { const fit = () => { if (media.classList.contains("igw")) media.style.height = Math.round(media.clientWidth * 9 / 16 + 56) + "px"; }; requestAnimationFrame(fit); window.__igFit = fit; }
-    if (p.instagrams) { const fit = () => media.querySelectorAll(".igc").forEach(c => c.style.height = Math.round(c.clientWidth * 1.25 + 54) + "px"); requestAnimationFrame(fit); window.__igFit = fit; }   /* 4:5 video under a 54px bar */
+    if (p.instagrams) { const fit = () => media.querySelectorAll(".igc").forEach(c => c.style.height = Math.floor(c.clientWidth * 1.25 + 52) + "px"); requestAnimationFrame(fit); window.__igFit = fit; }   /* 4:5 video under a 54px bar */
     media.classList.toggle("igs", !!p.instagrams);   /* several reels side by side */   /* vertical reel instead of a 16:9 frame */
     media.innerHTML = p.instagrams
       ? p.instagrams.map(id => `<div class="igc"><iframe src="https://www.instagram.com/reel/${encodeURIComponent(id)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe></div>`).join("")
