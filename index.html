@@ -180,6 +180,7 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj h2 { font-family: var(--cond); font-weight: 600; font-size: clamp(3rem, 9vw, 8rem); line-height: .85; margin: 24px 0 12px; }
 .proj .meta { color: var(--dim); display: flex; gap: 8px 24px; flex-wrap: wrap; margin-bottom: 28px; }
 .proj .media { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--card); }
+.proj .media.ig { aspect-ratio: auto; width: min(100%, 420px); height: min(78svh, 760px); margin-inline: auto; background: #fff; border-radius: 4px; overflow: hidden; }
 .proj .media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .proj .media video, .proj .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .proj .note { color: #555; margin-top: 18px; }
@@ -410,7 +411,7 @@ const ROLE = { prod: "Produção", real: "Realização", mont: "Montagem", arte:
 const P = [
   { y: 2026, t: "Waiting", f: "Curta-metragem", r: ["arte"], d: "Eunice Figueiras & Vasco Souto" },
   { y: 2026, t: "Último Canto", f: "Curta-metragem", r: ["anot"], d: "José Miguel" },
-  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" } },
+  { y: 2026, t: "A Noite em que Aprendi a Voar", f: "Curta-metragem", r: ["ar", "prod", "mont"], d: "Huenu", as: { prod: "Coordenação de produção" }, instagram: "DakgqETsr5Y" },
   { y: 2026, t: "Spot Nacional 2026 Lusófona", f: "Publicidade", r: ["anot"], d: "João Severo", clip: "media/spot-lusofona.mp4", youtube: "zn14jGFPtIQ" },
   { y: 2026, t: "Em Chamas", f: "Curta-metragem", r: ["anot"], d: "Ármik Israyelyan" },
   { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" } },
@@ -793,13 +794,16 @@ window.fitAll = fitAll;
   function open(p, k) {
     document.getElementById("proj-t").textContent = p.t;
     document.getElementById("proj-meta").innerHTML = [p.f, label(p, k), p.y].map(x => `<span>${esc(x)}</span>`).join("");
-    media.innerHTML = p.youtube
+    media.classList.toggle("ig", !!p.instagram && !p.youtube);   /* vertical reel instead of a 16:9 frame */
+    media.innerHTML = p.instagram && !p.youtube
+      ? `<iframe src="https://www.instagram.com/reel/${encodeURIComponent(p.instagram)}/embed/" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" scrolling="no"></iframe>`
+      : p.youtube
       ? `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.youtube)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(p.t)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`
       : p.clip ? `<video src="${esc(p.clip)}"${p.img ? ` poster="${esc(p.img)}"` : ""} muted loop playsinline autoplay controls></video>`
       : p.img ? `<img src="${esc(p.img)}" alt="">` : "";
     if (p.film) media.insertAdjacentHTML("beforeend",
       `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
-    document.getElementById("proj-note").hidden = !!(p.film || p.youtube);
+    document.getElementById("proj-note").hidden = !!(p.film || p.youtube || p.instagram);
     const v = media.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     if (box.hidden) history.pushState({ kaliOverlay: "proj" }, "");   /* back arrow closes the project instead of leaving the page */
     box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
