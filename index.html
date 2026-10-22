@@ -351,7 +351,8 @@ body.ff-locked { overflow: hidden; }
 .prose .motto { margin-top: 2em; font-size: 1.15em; }
 /* Sobre: loose, slightly disordered photo collage (each photo sets --c column, --y drop, --m mobile column) */
 .scatter { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2vw; row-gap: 3vw; align-items: start; margin-top: clamp(80px, 10vw, 140px); }
-.scatter img { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; }
+.scatter img { grid-column: var(--c); margin-top: var(--y, 0); width: 100%; height: auto; display: block; position: relative; will-change: transform; }
+.scatter img:nth-child(3n) { z-index: 2; } .scatter img:nth-child(3n+1) { z-index: 1; }
 @media (max-width: 700px) { .scatter { row-gap: 18px; column-gap: 0; } .scatter img { grid-column: var(--m); margin-top: 0; } }
 footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--dim); font-size: 11px; }
 @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
@@ -433,23 +434,23 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
         <div><dt>CV</dt><dd style="color:var(--dim)">PDF por adicionar</dd></div>
       </dl>
       <div class="scatter" aria-label="Fotografias de rodagem">
-        <img src="media/sobre/01.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:0vw">
-        <img src="media/sobre/02.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 3;--m:6 / span 7;--y:6vw">
-        <img src="media/sobre/03.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 5;--m:1 / span 11;--y:0vw">
-        <img src="media/sobre/04.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:6 / span 7;--y:4vw">
-        <img src="media/sobre/05.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 5;--m:1 / span 11;--y:2vw">
-        <img src="media/sobre/06.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:2 / span 11;--y:10vw">
-        <img src="media/sobre/07.jpg" alt="" loading="lazy" decoding="async" style="--c:3 / span 5;--m:1 / span 11;--y:0vw">
-        <img src="media/sobre/08.jpg" alt="" loading="lazy" decoding="async" style="--c:9 / span 3;--m:6 / span 7;--y:2vw">
-        <img src="media/sobre/09.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:1 / span 7;--y:4vw">
-        <img src="media/sobre/10.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 3;--m:6 / span 7;--y:10vw">
-        <img src="media/sobre/11.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:1 / span 7;--y:0vw">
-        <img src="media/sobre/12.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 5;--m:2 / span 11;--y:0vw">
-        <img src="media/sobre/13.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:8vw">
-        <img src="media/sobre/14.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 5;--m:2 / span 11;--y:0vw">
-        <img src="media/sobre/15.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:1 / span 7;--y:3vw">
-        <img src="media/sobre/16.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 6;--m:2 / span 11;--y:6vw">
-        <img src="media/sobre/17.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 3;--m:1 / span 7;--y:0vw">
+        <img src="media/sobre/01.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 3;--m:1 / span 7;--y:0vw" data-speed="0.12">
+        <img src="media/sobre/02.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 3;--m:6 / span 7;--y:6vw" data-speed="-0.08">
+        <img src="media/sobre/03.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 5;--m:1 / span 11;--y:0vw" data-speed="0.22">
+        <img src="media/sobre/04.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:6 / span 7;--y:4vw" data-speed="0.04">
+        <img src="media/sobre/05.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 5;--m:1 / span 11;--y:2vw" data-speed="-0.12">
+        <img src="media/sobre/06.jpg" alt="" loading="lazy" decoding="async" style="--c:7 / span 5;--m:2 / span 11;--y:10vw" data-speed="0.18">
+        <img src="media/sobre/07.jpg" alt="" loading="lazy" decoding="async" style="--c:3 / span 5;--m:1 / span 11;--y:0vw" data-speed="0.0">
+        <img src="media/sobre/08.jpg" alt="" loading="lazy" decoding="async" style="--c:9 / span 3;--m:6 / span 7;--y:2vw" data-speed="0.26">
+        <img src="media/sobre/09.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 3;--m:1 / span 7;--y:4vw" data-speed="-0.06">
+        <img src="media/sobre/10.jpg" alt="" loading="lazy" decoding="async" style="--c:5 / span 3;--m:6 / span 7;--y:10vw" data-speed="0.14">
+        <img src="media/sobre/11.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:1 / span 7;--y:0vw" data-speed="0.3">
+        <img src="media/sobre/12.jpg" alt="" loading="lazy" decoding="async" style="--c:2 / span 5;--m:2 / span 11;--y:0vw" data-speed="-0.1">
+        <img src="media/sobre/13.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 5;--m:1 / span 11;--y:8vw" data-speed="0.2">
+        <img src="media/sobre/14.jpg" alt="" loading="lazy" decoding="async" style="--c:4 / span 5;--m:2 / span 11;--y:0vw" data-speed="0.06">
+        <img src="media/sobre/15.jpg" alt="" loading="lazy" decoding="async" style="--c:10 / span 3;--m:1 / span 7;--y:3vw" data-speed="-0.14">
+        <img src="media/sobre/16.jpg" alt="" loading="lazy" decoding="async" style="--c:1 / span 6;--m:2 / span 11;--y:6vw" data-speed="0.24">
+        <img src="media/sobre/17.jpg" alt="" loading="lazy" decoding="async" style="--c:8 / span 3;--m:1 / span 7;--y:0vw" data-speed="0.1">
       </div>
     </section>
   </main>
@@ -898,6 +899,29 @@ document.getElementById("copy").addEventListener("click", async e => {
   catch (err) { const r = document.createRange(); r.selectNodeContents(m); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selecionado"; }
   setTimeout(() => b.textContent = "Copiar", 1600);
 });
+
+/* Sobre: parallax, each photo moves at its own speed while scrolling (data-speed) */
+(() => {
+  const box = document.querySelector(".scatter"); if (!box) return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const imgs = [...box.querySelectorAll("img")];
+  let raf = 0;
+  function tick() {
+    raf = 0;
+    if (box.offsetParent === null) return;              /* Sobre not on screen */
+    const mid = innerHeight / 2, k = innerWidth < 700 ? 0.4 : 0.75;
+    for (const im of imgs) {
+      const t = +im.dataset.t || 0, r = im.getBoundingClientRect();
+      const d = r.top - t + r.height / 2 - mid;          /* distance from the middle of the screen, without the shift */
+      if (r.bottom < -innerHeight || r.top > innerHeight * 2) continue;
+      const nt = -d * (+im.dataset.speed || 0) * k;
+      im.dataset.t = nt; im.style.transform = `translate3d(0, ${nt.toFixed(1)}px, 0)`;
+    }
+  }
+  const go = () => { if (!raf) raf = requestAnimationFrame(tick); };
+  addEventListener("scroll", go, { passive: true }); addEventListener("resize", go); addEventListener("hashchange", () => setTimeout(go, 50));
+  imgs.forEach(im => im.addEventListener("load", go)); go();
+})();
 </script>
 </body>
 </html>
