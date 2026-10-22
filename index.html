@@ -282,7 +282,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
 .peek { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: #000; }
 .peek.on { opacity: 1; }
 /* hover label in the top-left corner (p.peekLabel) */
-.peek-label { position: absolute; z-index: 1; top: calc(var(--hh, 76px) + env(safe-area-inset-top, 0px) + 16px); left: clamp(16px, 4.5vw, 64px); letter-spacing: .08em; opacity: .85; }
+.peek-label { position: absolute; z-index: 1; top: 50%; transform: translateY(-50%); left: clamp(16px, 4.5vw, 64px); letter-spacing: .08em; opacity: .85; }
 .peek video, .peek img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
 .peek .ph { position: absolute; inset: 0; display: grid; place-items: center; padding: 0 6vw;
   background: radial-gradient(80% 70% at 35% 45%, #2a2320 0%, #0e0c0b 65%, #000 100%);
@@ -697,6 +697,8 @@ addEventListener("resize", alignK);
         : p.img ? `<img src="${esc(p.img)}" alt="">`
         : `<div class="ph">${esc(p.t)}<small>Vídeo do projeto por adicionar</small></div>`;
       if (p.peekLabel) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(p.peekLabel)}</span>`);
+      const lab = peek.querySelector(".peek-label"), tb = box.querySelector(".tbl");
+      if (lab && tb) { const r = tb.getBoundingClientRect(); lab.style.top = (r.top + r.height / 2) + "px"; }   /* level with the middle of the table */
       const v = peek.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     }
     peek.classList.add("on"); document.body.classList.add("peeking");
