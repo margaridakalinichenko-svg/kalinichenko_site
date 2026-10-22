@@ -199,6 +199,7 @@ body:has(#realizacao:not([hidden])) { padding-bottom: 0; }
   padding-block: clamp(32px, 6vh, 72px); scroll-snap-align: start; scroll-margin-top: var(--hh, 76px); align-content: start; }
 .slide { scroll-snap-align: start; }
 
+.soon-space { height: calc(100svh - 250px); }   /* keeps the footer at the bottom of the screen */
 .soon { position: fixed; inset: 0; pointer-events: none; display: grid; place-items: center; font-family: var(--cond); font-weight: 600; font-size: clamp(2.4rem, 7vw, 6rem); opacity: .35; letter-spacing: .02em; }
 /* Montagem showreel: one full-screen player */
 .page:has(.reel) { padding-top: 0; }
@@ -478,7 +479,7 @@ for (const [id, cfg] of Object.entries(PAGES)) {
   const n = main.length + crew.length;
   document.getElementById(id).innerHTML = `
     <h1 class="sr-only" id="h-${cfg.main}">${esc(cfg.title)}</h1>
-    ${cfg.soon ? `<div class="soon">Em breve</div>` : cfg.reel ? reelMarkup() : !main.length ? "" : cfg.full ? `<div class="slides">${main.map(p => slide(p, cfg.main)).join("")}</div>` : `<div class="cards">${main.map(p => card(p, cfg.main)).join("")}</div>`}
+    ${cfg.soon ? `<div class="soon-space"></div><div class="soon">Em breve</div>` : cfg.reel ? reelMarkup() : !main.length ? "" : cfg.full ? `<div class="slides">${main.map(p => slide(p, cfg.main)).join("")}</div>` : `<div class="cards">${main.map(p => card(p, cfg.main)).join("")}</div>`}
     ${crew.length && !cfg.soon ? `<div class="credits">${table(cfg.crewTitle, crew, keys)}</div>` : ""}`;
 }
 
