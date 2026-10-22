@@ -214,6 +214,9 @@ body.is-home .surname { white-space: nowrap; overflow-wrap: normal; }
 .proj .media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .proj .media video, .proj .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .proj .note { color: #555; margin-top: 18px; }
+.proj-credit { display: flex; justify-content: space-between; gap: 8px 32px; margin-top: 18px; }
+.proj-credit span:last-child { text-align: right; }
+@media (max-width: 700px) { .proj-credit { flex-direction: column; } .proj-credit span:last-child { text-align: left; } }
 .proj .media .watch { position: absolute; inset: 0; z-index: 1; display: grid; place-content: center; justify-items: center; gap: 14px;
   background: rgba(0,0,0,.35); transition: background .3s; letter-spacing: .08em; }
 .proj .media .watch:hover { background: rgba(0,0,0,.5); }
@@ -406,6 +409,7 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
   <h2 id="proj-t"></h2>
   <div class="meta" id="proj-meta"></div>
   <div class="media" id="proj-media"></div>
+  <div class="proj-credit" id="proj-credit" hidden><span id="proj-cl"></span><span id="proj-cr"></span></div>
   <p class="note" id="proj-note">Sinopse, ficha técnica e link para o filme por adicionar</p>
   <footer class="proj-foot"><span>© 2026 Margarida Kalinichenko</span><span>Lisboa</span></footer>
 </div>
@@ -510,6 +514,7 @@ const P = [
   { y: 2025, t: "CANSO “Airspace World 2025”", f: "Evento", r: ["prod"], as: { prod: "Produtora da Equipa Audiovisual" }, instagram: "DJ9iX6gMl15" },
   { y: 2025, t: "Lote 28", f: "Piloto de série", r: ["prod"], as: { prod: "Produção & Showrunner" }, youtube: "wpmgNHWvtc8", clip: "media/lote28.mp4", img: "media/lote28.jpg" },
   { y: 2025, t: "Chulé", f: "Publicidade", r: ["prod", "real"], clip: "media/chule.mp4", img: "media/chule.jpg",
+    credit: ["Realizado e Produzido por Kali", "Com Miguel Frazão e Pedro Emauz"],
     youtube: "HF8i05qGSTA" },
   { y: 2025, t: "Victoria Leuca – Só", f: "Videoclipe", r: ["prod"], clip: "media/so.mp4", img: "media/so.jpg", youtube: "cEUa3SJD_sw" },
   { y: 2025, t: "A Hora do Chico", f: "Curta-metragem", r: ["anot"], d: "João Severo & Rafael Sá Carneiro", youtube: "Bvn0W4VuJ1U", clip: "media/hora-chico-2.mp4", img: "media/hora-chico-2.jpg", festival: true },
@@ -942,6 +947,11 @@ window.fitAll = fitAll;
       : p.img ? `<img src="${esc(p.img)}" alt="">` : "";
     if (p.film) media.insertAdjacentHTML("beforeend",
       `<a class="watch" href="${esc(p.film)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span>Ver o filme${p.filmWhere ? " no " + esc(p.filmWhere) : ""} ↗</a>`);
+    /* credit: [left, right] lines under the video */
+    const cr = document.getElementById("proj-credit");
+    cr.hidden = !p.credit;
+    document.getElementById("proj-cl").textContent = p.credit ? p.credit[0] || "" : "";
+    document.getElementById("proj-cr").textContent = p.credit ? p.credit[1] || "" : "";
     document.getElementById("proj-note").hidden = !!(p.film || p.youtube || p.instagram || p.instagrams || p.sound);
     const v = media.querySelector("video"); if (v) { v.muted = !p.sound; const r = v.play(); if (r && r.catch) r.catch(() => { v.muted = true; v.play().catch(() => {}); }); }
     if (box.hidden) history.pushState({ kaliOverlay: "proj" }, "");   /* back arrow closes the project instead of leaving the page */
