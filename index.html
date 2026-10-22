@@ -74,6 +74,10 @@ header nav a[aria-current="page"] { opacity: 1; font-weight: 500; }
   .tbl td:nth-child(3) { grid-area: r; color: var(--dim); font-size: .92em; }
   .tbl td:nth-child(4) { grid-area: f; color: var(--dim); font-size: .92em; text-align: right; }
   .tbl tbody tr.no-open { cursor: default; }
+  .tbl tbody tr { transition: opacity .4s; }
+  body.peeking .layer > header { background: var(--bg); box-shadow: 0 0 0 100vmax var(--bg); }
+  .credits.peeking tbody tr { opacity: .35; }
+  .credits.peeking tbody tr.on { opacity: 1; }
 }
 @media (min-width: 900px) {
   header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; }
@@ -743,8 +747,8 @@ addEventListener("resize", alignK);
 (() => {
   const peek = document.getElementById("peek"), fine = matchMedia("(hover: hover) and (min-width: 900px)");
   let cur = null;
-  function on(tr) {
-    if (!fine.matches) return;
+  function on(tr, auto) {
+    if (!fine.matches && !auto) return;
     const p = P[+tr.dataset.i]; if (!p) return;
     const box = tr.closest(".credits");
     box.classList.add("peeking"); box.querySelectorAll("tr.on").forEach(r => r.classList.remove("on")); tr.classList.add("on");
@@ -752,15 +756,21 @@ addEventListener("resize", alignK);
       cur = p;
       peek.innerHTML = p.clip ? `<video src="${esc(p.clip)}" muted loop playsinline autoplay></video>`
         : p.img ? `<img src="${esc(p.img)}" alt="">`
-        : `<div class="ph">${esc(p.t)}<small>Vídeo do projeto por adicionar</small></div>`;
+        : auto ? "" : `<div class="ph">${esc(p.t)}<small>Vídeo do projeto por adicionar</small></div>`;
       /* peekLabel: text for every table, or { pageId: text } for some pages only */
       const pl = typeof p.peekLabel === "string" ? p.peekLabel : (p.peekLabel || {})[(tr.closest(".page") || {}).id];
       if (pl) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(pl)}</span>`);
-      const lab = peek.querySelector(".peek-label"), tb = box.querySelector(".tbl");
-      if (lab && tb) { const r = tb.getBoundingClientRect(); lab.style.top = (r.top + r.height / 2) + "px"; }   /* level with the middle of the table */
+      place(box);
       const v = peek.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     }
     peek.classList.add("on"); document.body.classList.add("peeking");
+  }
+  function place(box) {   /* label level with the middle of the table */
+    const lab = peek.querySelector(".peek-label"), tb = box && box.querySelector(".tbl");
+    if (!lab || !tb) return;
+    const r = tb.getBoundingClientRect();
+    if (fine.matches) { lab.style.top = (r.top + r.height / 2) + "px"; lab.style.transform = ""; }
+    else { lab.style.top = (r.bottom + 22) + "px"; lab.style.transform = "none"; }   /* phones: just under the table */
   }
   function off(box) {
     box.classList.remove("peeking"); box.querySelectorAll("tr.on").forEach(r => r.classList.remove("on"));
@@ -776,6 +786,26 @@ addEventListener("resize", alignK);
     tb.addEventListener("focusout", e => { if (!tb.contains(e.relatedTarget)) off(box); });
   });
   addEventListener("hashchange", () => document.querySelectorAll(".credits").forEach(off));
+
+  /* phones / touch: no hover, so the rows take turns by themselves, one every 5 seconds,
+     while the table is on screen; the chosen title stays white and its footage fills the background */
+  let timer = 0, live = null, k = 0;
+  function stop() { clearInterval(timer); timer = 0; if (live) off(live); live = null; }
+  function start(box) {
+    if (fine.matches || live === box) return;
+    stop(); live = box; k = 0;
+    const rows = [...box.querySelectorAll("tbody tr")]; if (!rows.length) return;
+    const step = () => { if (!document.body.contains(box) || box.offsetParent === null) return stop(); on(rows[k % rows.length], true); k++; };
+    step(); timer = setInterval(step, 5000);
+  }
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio > 0.5) start(e.target);
+    else if (live === e.target) stop();
+  }), { threshold: [0, 0.5, 0.75] });
+  document.querySelectorAll(".credits").forEach(b => io.observe(b));
+  addEventListener("hashchange", stop);
+  addEventListener("scroll", () => { if (live) place(live); }, { passive: true });
+  fine.addEventListener && fine.addEventListener("change", stop);
 })();
 
 (() => {
