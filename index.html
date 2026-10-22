@@ -13,7 +13,7 @@
 <body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;1,400&family=Barlow+Condensed:wght@500;600&family=Roboto:ital,wght@0,400;0,500;1,400&family=Roboto+Condensed:wght@500;600&display=swap">
 <style>
 /* Layout: one black, single-theme system for every page. Home = the dance video and the giant surname.
    Inner pages reuse that voice: a condensed display title, small uppercase Barlow for everything else,
@@ -25,8 +25,8 @@
   --rule: #f2f2f2;
   --rule-soft: #2c2c2c;
   --card: #111;
-  --sans: "Barlow", "Helvetica Neue", Arial, sans-serif;
-  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --sans: "Barlow", "Roboto", "Helvetica Neue", Arial, sans-serif;   /* Roboto only for Cyrillic (RU) */
+  --cond: "Barlow Condensed", "Roboto Condensed", "Arial Narrow", sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -422,6 +422,14 @@ body.editing .scatter > .ed-sel { outline: 2px solid #fff; outline-offset: 2px; 
 .ed-bar { position: fixed; z-index: 50; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
   background: rgba(20,20,20,.92); border: 1px solid #333; padding: 10px 14px; border-radius: 6px; max-width: calc(100vw - 32px); }
 .ed-bar span { color: var(--dim); } .ed-bar button { border: 1px solid #555; padding: 6px 10px; border-radius: 4px; } .ed-bar button:hover { border-color: #fff; }
+/* EN / PT / RU pill on the home page, top-right */
+.lang { position: fixed; z-index: 5; top: calc(env(safe-area-inset-top, 0px) + 22px); right: clamp(16px, 4.5vw, 64px);
+  display: flex; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(18,18,18,.72);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.lang button { padding: 7px 14px 6px; border-radius: 999px; font-size: 12px; letter-spacing: .14em; color: #e9e9e4; transition: background .25s, color .25s; }
+.lang button:hover { background: rgba(255,255,255,.08); }
+.lang button[aria-pressed="true"] { background: #b9c6a8; color: #121410; }
+body:not(.is-home) .lang, body.choosing .lang { display: none; }
 footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--dim); font-size: 11px; }
 @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
 </style>
@@ -529,6 +537,94 @@ footer { margin-top: 112px; display: flex; justify-content: space-between; gap: 
   <footer><span>© 2026 Margarida Kalinichenko</span><span>Lisboa</span></footer>
 </div>
 <script>
+/* ---- Languages: PT (original), EN, RU. The choice lives in localStorage ("kali-lang") or ?lang=en|ru|pt.
+   Every visible Portuguese string is looked up in DICT; credits "Realizado por …" are translated by pattern. ---- */
+const LANGS = ["en", "pt", "ru"];
+const LANG = (() => {
+  const q = new URLSearchParams(location.search).get("lang");
+  if (q && LANGS.includes(q)) { try { localStorage.setItem("kali-lang", q); } catch (e) {} return q; }
+  try { const s = localStorage.getItem("kali-lang"); if (LANGS.includes(s)) return s; } catch (e) {}
+  return "pt";
+})();
+document.documentElement.lang = LANG === "pt" ? "pt-PT" : LANG;
+const DICT = {
+  en: {
+    "Produção": "Production", "Realização": "Direction", "Montagem": "Editing", "Sobre": "About", "For fun": "For fun",
+    "Ver trabalho →": "See work →", "Fechar": "Close", "Lisboa": "Lisbon", "Início": "Home",
+    "Curta-metragem": "Short film", "Publicidade": "Advertising", "Videoclipe": "Music video", "Piloto de série": "Series pilot",
+    "Evento": "Event", "Documentário": "Documentary", "Retrato": "Portrait",
+    "Direção de arte": "Art direction", "Anotação": "Script supervision", "Assistência de realização": "Assistant director",
+    "Coordenação de produção": "Production coordination", "Produção & Showrunner": "Producer & Showrunner",
+    "Produtora da Equipa Audiovisual": "Audiovisual team producer", "Montagem & Legendagem": "Editing & Subtitling",
+    "Ver mais →": "See more →", "Ver trailer →": "Watch trailer →", "Ver trailer": "Watch trailer", "Ver filme": "Watch film",
+    "Em breve": "Coming soon", "Copiar": "Copy", "Copiado": "Copied", "Selecionado": "Selected", "Email": "Email",
+    "Atualmente no circuito de festivais": "Currently on the festival circuit",
+    "Atualmente em circuito de festivais": "Currently on the festival circuit",
+    "Com Lagosta Tranquina": "With Lagosta Tranquina",
+    "Sinopse, ficha técnica e link para o filme por adicionar": "Synopsis, credits and film link coming soon",
+    "Menção honrosa, Ensaio Nacional, 31.º Caminhos do Cinema Português, Coimbra 2025": "Honourable mention, National Essay, 31st Caminhos do Cinema Português, Coimbra 2025",
+    "Departamentos": "Departments", "Escolher área de trabalho": "Choose an area of work", "Fotografias de rodagem": "Behind-the-scenes photos",
+    "Olá, sou a Margarida Kalinichenko, mas toda a gente me chama Kali :)": "Hi, I'm Margarida Kalinichenko, but everyone calls me Kali :)",
+    "Estudei Cinema e Artes dos Media na Universidade Lusófona de Lisboa. Produzo e realizo, entre o cinema e a publicidade. E o que mais gosto é de fazer as coisas acontecer, por mais difícil que sejam.":
+      "I studied Cinema and Media Arts at Universidade Lusófona in Lisbon. I produce and direct, across film and advertising. And what I love most is making things happen, however hard they are.",
+    "Sou perfeccionista, despachada e não consigo parar quieta até as coisas estarem resolvidas. Enquanto quem está à minha volta ainda está a perceber o que aconteceu, eu já estou a meio da solução, com o que estiver à mão. E o que não estiver, vou buscar. Adoro construir coisas com as minhas próprias mãos, e é algo que tenho trazido cada vez mais para o meu trabalho.":
+      "I'm a perfectionist, quick on my feet, and I can't sit still until things are sorted. While everyone around me is still working out what just happened, I'm already halfway to the solution, with whatever is at hand. And whatever isn't, I go and get. I love building things with my own hands, and it's something I've been bringing more and more into my work.",
+    "Em pequena não me deixaram ficar no ballet, por isso passei anos na natação artística, que continua a fazer parte da minha vida. Mas o ballet nunca me saiu da cabeça, e é por isso que o vão encontrando, aqui e ali, no meu trabalho.":
+      "As a child I wasn't allowed to stay in ballet, so I spent years in artistic swimming, which is still part of my life. But ballet never left my mind, and that's why you'll find it, here and there, in my work.",
+    "Tudo a seu tempo. Mas sempre dois passos à frente": "All in good time. But always two steps ahead"
+  },
+  ru: {
+    "Produção": "Продюсирование", "Realização": "Режиссура", "Montagem": "Монтаж", "Sobre": "Обо мне", "For fun": "Для души",
+    "Ver trabalho →": "Смотреть работы →", "Fechar": "Закрыть", "Lisboa": "Лиссабон", "Início": "Главная",
+    "Curta-metragem": "Короткометражный фильм", "Publicidade": "Реклама", "Videoclipe": "Музыкальный клип", "Piloto de série": "Пилот сериала",
+    "Evento": "Мероприятие", "Documentário": "Документальный фильм", "Retrato": "Портрет",
+    "Direção de arte": "Арт-дирекция", "Anotação": "Скрипт-супервайзер", "Assistência de realização": "Ассистент режиссёра",
+    "Coordenação de produção": "Координатор производства", "Produção & Showrunner": "Продюсер и шоураннер",
+    "Produtora da Equipa Audiovisual": "Продюсер аудиовизуальной команды", "Montagem & Legendagem": "Монтаж и субтитры",
+    "Ver mais →": "Подробнее →", "Ver trailer →": "Смотреть трейлер →", "Ver trailer": "Смотреть трейлер", "Ver filme": "Смотреть фильм",
+    "Em breve": "Скоро", "Copiar": "Копировать", "Copiado": "Скопировано", "Selecionado": "Выделено", "Email": "Почта",
+    "Atualmente no circuito de festivais": "Сейчас на фестивалях",
+    "Atualmente em circuito de festivais": "Сейчас на фестивалях",
+    "Com Lagosta Tranquina": "Совместно с Lagosta Tranquina",
+    "Sinopse, ficha técnica e link para o filme por adicionar": "Синопсис, титры и ссылка на фильм появятся позже",
+    "Menção honrosa, Ensaio Nacional, 31.º Caminhos do Cinema Português, Coimbra 2025": "Почётное упоминание, национальный конкурс эссе, 31-й фестиваль Caminhos do Cinema Português, Коимбра, 2025",
+    "Departamentos": "Разделы", "Escolher área de trabalho": "Выберите направление", "Fotografias de rodagem": "Фотографии со съёмок",
+    "Olá, sou a Margarida Kalinichenko, mas toda a gente me chama Kali :)": "Привет, я Маргарида Калиниченко, но все зовут меня Кали :)",
+    "Estudei Cinema e Artes dos Media na Universidade Lusófona de Lisboa. Produzo e realizo, entre o cinema e a publicidade. E o que mais gosto é de fazer as coisas acontecer, por mais difícil que sejam.":
+      "Я изучала кино и медиаискусство в Университете Лузофона в Лиссабоне. Я продюсирую и снимаю — в кино и в рекламе. И больше всего люблю воплощать задуманное в жизнь, как бы сложно это ни было.",
+    "Sou perfeccionista, despachada e não consigo parar quieta até as coisas estarem resolvidas. Enquanto quem está à minha volta ainda está a perceber o que aconteceu, eu já estou a meio da solução, com o que estiver à mão. E o que não estiver, vou buscar. Adoro construir coisas com as minhas próprias mãos, e é algo que tenho trazido cada vez mais para o meu trabalho.":
+      "Я перфекционистка, быстро соображаю и не могу успокоиться, пока всё не решено. Пока окружающие ещё пытаются понять, что произошло, я уже на полпути к решению — с тем, что есть под рукой. А чего нет, то достану. Я люблю делать вещи своими руками и всё чаще привношу это в свою работу.",
+    "Em pequena não me deixaram ficar no ballet, por isso passei anos na natação artística, que continua a fazer parte da minha vida. Mas o ballet nunca me saiu da cabeça, e é por isso que o vão encontrando, aqui e ali, no meu trabalho.":
+      "В детстве мне не дали остаться в балете, поэтому я много лет занималась артистическим плаванием, которое до сих пор остаётся частью моей жизни. Но балет так и не выходил у меня из головы — поэтому его можно встретить то тут, то там в моих работах.",
+    "Tudo a seu tempo. Mas sempre dois passos à frente": "Всему своё время. Но всегда на два шага впереди"
+  }
+};
+const NAMES_RU = { "Kali": "Кали" };
+function tr(s) {
+  if (LANG === "pt" || !s) return s;
+  const d = DICT[LANG];
+  if (d[s] != null) return d[s];
+  let m = s.match(/^Realizado e Fotografado por (.+)$/);
+  if (m) return (LANG === "en" ? "Directed and photographed by " : "Режиссура и операторская работа: ") + names(m[1]);
+  m = s.match(/^Realizado por (.+)$/);
+  if (m) return (LANG === "en" ? "Directed by " : "Режиссёр: ") + names(m[1]);
+  for (const sep of [" · ", " & "]) if (s.includes(sep)) { const parts = s.split(sep); if (parts.some(p => d[p] != null)) return parts.map(p => d[p] != null ? d[p] : p).join(sep); }
+  return s;
+}
+function names(list) {   /* "A, B e C" → "A, B and C" / "A, B и C" */
+  let out = list.replace(/ e /g, LANG === "en" ? " and " : " и ");
+  if (LANG === "ru") out = out.replace(/\bKali\b/g, NAMES_RU.Kali);
+  return out;
+}
+function translateTree(root) {
+  if (LANG === "pt" || !root) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => n.parentElement && /^(SCRIPT|STYLE)$/.test(n.parentElement.tagName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+  nodes.forEach(n => { const t = n.nodeValue.trim(); if (!t) return; const r = tr(t); if (r !== t) n.nodeValue = n.nodeValue.replace(t, r); });
+  root.querySelectorAll && root.querySelectorAll("[alt],[aria-label],[title]").forEach(el => ["alt", "aria-label", "title"].forEach(a => {
+    const v = el.getAttribute(a); if (v) { const r = tr(v); if (r !== v) el.setAttribute(a, r); }
+  }));
+}
 const ROLE = { prod: "Produção", real: "Realização", mont: "Montagem", arte: "Direção de arte", anot: "Anotação", ar: "Assistência de realização" };
 /* d = who directed it (for crew credits); img = still for the rectangle when available */
 const P = [
@@ -733,7 +829,7 @@ function route() {
     if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
   const names = { producao: "Produção", montagem: "Montagem", realizacao: "Realização", forfun: "For fun", sobre: "Sobre" };
-  document.title = home ? "Kalinichenko" : names[id] + " · Kalinichenko";
+  document.title = home ? "Kalinichenko" : tr(names[id]) + " · Kalinichenko";
   /* the page ids match the hash, so the browser also jumps to the section: undo that, every page opens at the top */
   window.scrollTo(0, 0); requestAnimationFrame(() => window.scrollTo(0, 0)); setTimeout(() => window.scrollTo(0, 0), 60);
   if (typeof setHH === "function") requestAnimationFrame(setHH);
@@ -813,7 +909,7 @@ addEventListener("resize", alignK);
         : "";   /* no footage yet: plain black */
       /* peekLabel: text for every table, or { pageId: text } for some pages only */
       const pl = typeof p.peekLabel === "string" ? p.peekLabel : (p.peekLabel || {})[(tr.closest(".page") || {}).id];
-      if (pl) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(pl)}</span>`);
+      if (pl) peek.insertAdjacentHTML("beforeend", `<span class="peek-label">${esc(tr(pl))}</span>`);
       place(box);
       const v = peek.querySelector("video"); if (v) { v.muted = true; const r = v.play(); if (r && r.catch) r.catch(() => {}); }
     }
@@ -986,6 +1082,7 @@ window.fitAll = fitAll;
     document.getElementById("proj-cl").textContent = p.credit ? p.credit[0] || "" : "";
     document.getElementById("proj-cr").textContent = p.credit ? p.credit[1] || "" : "";
     document.getElementById("proj-note").hidden = !!(p.film || p.youtube || p.instagram || p.instagrams || p.sound);
+    translateTree(box);
     const v = media.querySelector("video"); if (v) { v.muted = !p.sound; const r = v.play(); if (r && r.catch) r.catch(() => { v.muted = true; v.play().catch(() => {}); }); }
     if (box.hidden) history.pushState({ kaliOverlay: "proj" }, "");   /* back arrow closes the project instead of leaving the page */
     box.hidden = false; box.scrollTop = 0; document.body.classList.add("proj-on");
@@ -1011,9 +1108,9 @@ window.fitAll = fitAll;
 
 document.getElementById("copy").addEventListener("click", async e => {
   const b = e.currentTarget, m = document.getElementById("mail");
-  try { await navigator.clipboard.writeText(m.textContent); b.textContent = "Copiado"; }
-  catch (err) { const r = document.createRange(); r.selectNodeContents(m); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selecionado"; }
-  setTimeout(() => b.textContent = "Copiar", 1600);
+  try { await navigator.clipboard.writeText(m.textContent); b.textContent = tr("Copiado"); }
+  catch (err) { const r = document.createRange(); r.selectNodeContents(m); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = tr("Selecionado"); }
+  setTimeout(() => b.textContent = tr("Copiar"), 1600);
 });
 
 /* Sobre: parallax, each photo moves at its own speed while scrolling (data-speed) */
@@ -1115,6 +1212,20 @@ document.getElementById("copy").addEventListener("click", async e => {
   addEventListener("resize", anchor); addEventListener("load", anchor); addEventListener("hashchange", () => setTimeout(anchor, 80));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(anchor);
   setTimeout(anchor, 50);
+})();
+
+/* ---- language: translate what's on the page, and the EN / PT / RU switch on the home page ---- */
+translateTree(document.body);
+(() => {
+  const home = document.getElementById("inicio"); if (!home) return;
+  const sw = document.createElement("div"); sw.className = "lang"; sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Language");
+  sw.innerHTML = LANGS.map(l => `<button type="button" data-l="${l}" aria-pressed="${l === LANG}">${l.toUpperCase()}</button>`).join("");
+  home.appendChild(sw);
+  sw.addEventListener("click", e => {
+    const l = e.target.dataset && e.target.dataset.l; if (!l || l === LANG) return;
+    try { localStorage.setItem("kali-lang", l); } catch (er) {}
+    const u = new URL(location.href); if (u.searchParams.has("lang")) { u.searchParams.delete("lang"); location.replace(u.pathname + u.search + u.hash); } else location.reload();
+  });
 })();
 </script>
 </body>
