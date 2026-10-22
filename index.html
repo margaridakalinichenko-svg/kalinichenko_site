@@ -709,6 +709,10 @@ function route() {
 const setHH = () => document.documentElement.style.setProperty("--hh", document.querySelector("header").offsetHeight + "px");
 addEventListener("resize", setHH);
 addEventListener("hashchange", route);
+/* clicking the section you're already on (or KALI) also takes you back to the top */
+document.querySelectorAll('header a[href^="#"]').forEach(a => a.addEventListener("click", () => {
+  if (a.getAttribute("href") === location.hash) { window.scrollTo(0, 0); }
+}));
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 addEventListener("load", () => { if (location.hash) window.scrollTo(0, 0); });
 route(); setHH(); requestAnimationFrame(setHH);
